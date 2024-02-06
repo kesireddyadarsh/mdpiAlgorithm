@@ -9,9 +9,9 @@ Index	Function Name	Negative Value accepted	Constraints	Coding comments
 
 2 	Fonseca-Fleming 	Yes	No	Completed and tested
 
-3	Test Function 4	Yes	Yes	Still Need Work
+3	Test Function 4	Yes	Yes	Completed and tested
 
-4 	Kursawe 	Yes	No	Here ‘i’ value is constant to 3. Still Need Work.
+4 	Kursawe 	Yes	No	Here ‘i’ value is constant to 3. Completed and tested.
 
 5	Schaffer function N1 	Yes	No	Its working start with small search space such as 10 then increase to 10^5. Completed and tested. 
 
