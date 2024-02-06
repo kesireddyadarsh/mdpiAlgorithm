@@ -16,7 +16,7 @@ Index	Function Name	Negative Value accepted	Constraints	Coding comments
 
 1 	Chancing and Haimes	Yes	Yes	Completed and tested
 
-2 	Fonseca-Fleming 	Yes	No	Still Need Work
+2 	Fonseca-Fleming 	Yes	No	Completed and tested
 
 3	Test Function 4	Yes	Yes	Still Need Work
 
@@ -34,17 +34,17 @@ Index	Function Name	Negative Value accepted	Constraints	Coding comments
 
 10	Zitzler-Deb-Thiele’s N3	No 	No	Completed and tested 
 
-11	Zitzler-Deb-Thiele’s N4	Yes	No	
+11	Zitzler-Deb-Thiele’s N4	Yes	No	Completed and tested
 
-12	Zitzler-Deb-Thiele’s N6	No	No	
+12	Zitzler-Deb-Thiele’s N6	No	No	Completed and tested
 
 13 	Osyczka and Kundu	no	yes	Completed and tested. 
 
-14	CTP1 function	no	yes	
+14	CTP1 function	no	yes	Completed and tested.
 
-15 	Const-Ex	No 	Yes	
+15 	Const-Ex	No 	Yes	Completed and tested
 
-16	Viennet	Yes	No	
+16	Viennet	Yes	No	Completed and tested
 
 
 
