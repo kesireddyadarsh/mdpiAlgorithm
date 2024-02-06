@@ -28,6 +28,6 @@ void cal_normalized_fitness_values(vector<individual_element>* p_ind_population,
 void mutate(vector<individual_element>* p_ind_population,int individual,bool negative_value_accepted);
 bool compare_two_index(vector<individual_element>* p_ind_population,int individual ,int other_individual);
 vector<double> generateUniqueRandomNumbers(double mean, double std_dev, int count);
-void assign_front_number(vector<individual_element>* p_ind_population);
+vector<vector<int>> assign_front_number(vector<individual_element>* p_ind_population);
 
 #endif /* CommonMethods_hpp */

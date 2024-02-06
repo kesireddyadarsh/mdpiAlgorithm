@@ -138,7 +138,7 @@ bool compare_two_index(vector<individual_element>* p_ind_population,int first_in
     
 }
 
-void assign_front_number(vector<individual_element>* p_ind_population){
+vector<vector<int>> assign_front_number(vector<individual_element>* p_ind_population){
     //pushes all the dominating values
     vector<int> all_sizes;
     vector<vector <int> > fronts;
@@ -211,9 +211,60 @@ void assign_front_number(vector<individual_element>* p_ind_population){
         }
     }
     
+    
+    vector<int> asperfront; // values are stored as per fronts.
+    for (int i = 0; i< fronts.size(); i++) {
+        for (int j = 0; j< fronts.at(i).size(); j++) {
+            asperfront.push_back(fronts.at(i).at(j));
+        }
+    }
+    
+    int current_number = 0;
+    int required_number = 0;
+    int front_number_to_select = -999;   //This is front which you need to play
+    bool algorithm_implementation_flag = false;
+    required_number = p_ind_population->size()/2;//This is making 4
+    for (int front_number = 0 ; front_number < fronts.size(); front_number++) {
+        current_number = fronts.at(front_number).size();
+        required_number -= current_number;
+        if (required_number < 0) {
+            front_number_to_select = front_number;
+            break;
+        }else if (required_number == 0){
+            front_number_to_select = front_number;
+            algorithm_implementation_flag = true;
+            break;
+        }
+    }
+    
     for (int index = 0 ; index < p_ind_population->size(); index++) {
         assert(p_ind_population->at(index).front_number != -9999);
         assert(p_ind_population->at(index).in_front);
     }
     
+    vector<vector<int>> return_this;
+    
+    //First check if we need to apply optimizer
+    vector<int> temp;
+    if (algorithm_implementation_flag) {
+        temp.push_back(0); // No more process in required
+        temp.push_back(0);
+        temp.push_back(front_number_to_select);
+        return_this.push_back(temp);
+        return_this.push_back(fronts.at(front_number_to_select));
+    }else{
+        temp.push_back(1); // Algorithm needs to be applied for optimization
+        temp.push_back(required_number);
+        temp.push_back(front_number_to_select);
+        return_this.push_back(temp);
+        return_this.push_back(fronts.at(front_number_to_select));
+    }
+    
+    
+    
+    return return_this;
+    
 }
+
+
+

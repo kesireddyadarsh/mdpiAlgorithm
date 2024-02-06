@@ -16,6 +16,7 @@
 #include "TestScenario.hpp"
 #include "printToFile.hpp"
 #include "simpleEA.hpp"
+#include "nsga_ii.hpp"
 
 
 using namespace std;
@@ -31,10 +32,10 @@ int main(int argc, const char * argv[]) {
     
     population pop;
     int number_of_population = 30;
-    int case_number = 16;//This is objective number
-    int number_of_objectives = 3;
+    int case_number = 4;//This is objective number
+    int number_of_objectives = 2;
     
-    for (int generation = 0 ; generation < 100; generation++) {
+    for (int generation = 0 ; generation < 1000; generation++) {
         if (generation == 0 ) {
             for (int individual = 0; individual < number_of_population; individual++) {
                 individual_element element;
@@ -55,6 +56,7 @@ int main(int argc, const char * argv[]) {
                 pop.ind_population.at(individual).remove_me = false;
                 pop.ind_population.at(individual).fitnes_value.clear();
                 pop.ind_population.at(individual).normalized_fitness_values.clear();
+                pop.ind_population.at(individual).crowding_distance = 0.0;
                 
                 exe_function( pop.p_ind_population, individual, case_number);
                 
@@ -63,45 +65,63 @@ int main(int argc, const char * argv[]) {
         
         printValues(pop, generation);
         cal_normalized_fitness_values(pop.p_ind_population, number_of_objectives);
-        assign_front_number(pop.p_ind_population);
+        vector<vector<int>> hold_values_for_algorithm = assign_front_number(pop.p_ind_population);
         
-        int case_to_study = 0;
-        switch (case_to_study) {
-            case 0:
-            {
-                simple_ea(pop.p_ind_population);
-                break;
+        if (hold_values_for_algorithm.at(0).at(0) == 0) {
+            for (int individual = 0 ; individual < pop.ind_population.size(); individual++) {
+                if (pop.ind_population.at(individual).front_number > hold_values_for_algorithm.at(0).at(2)) {
+                    pop.ind_population.at(individual).remove_me = true;
+                }
             }
-                
-            case 1:
-            {
-//                nsga_ii(pop.p_ind_population,number_of_objectives, generation, negative_value_accepted);
-                break;
+            
+            for (int individual = 0 ; individual < pop.ind_population.size(); individual++) {
+                if (pop.ind_population.at(individual).remove_me) {
+                    pop.ind_population.erase(pop.ind_population.begin() + individual);
+                    individual = -1;
+                }
             }
-                
-            case 2:
-            {
-//                nsga_iii(pop.p_ind_population, number_of_objectives, generation, negative_value_accepted);
-                break;
+        }else{
+            int case_to_study = 1;
+            switch (case_to_study) {
+                case 0:
+                {
+                    simple_ea(pop.p_ind_population);
+                    break;
+                }
+                    
+                case 1:
+                {
+                    nsga_ii(pop.p_ind_population,number_of_objectives, generation, negative_value_accepted, hold_values_for_algorithm);
+                    break;
+                }
+                    
+                case 2:
+                {
+    //                nsga_iii(pop.p_ind_population, number_of_objectives, generation, negative_value_accepted);
+                    break;
+                }
+                    
+                case 3:
+                {
+    //                mpf(pop.p_ind_population, number_of_objectives, generation, negative_value_accepted);
+                    break;
+                }
+                    
+                case 4:
+                {
+    //                empf(pop.p_ind_population, number_of_objectives, generation, negative_value_accepted,case_number);
+                    break;
+                }
+                    
+                    
+                default:
+                    break;
             }
-                
-            case 3:
-            {
-//                mpf(pop.p_ind_population, number_of_objectives, generation, negative_value_accepted);
-                break;
-            }
-                
-            case 4:
-            {
-//                empf(pop.p_ind_population, number_of_objectives, generation, negative_value_accepted,case_number);
-                break;
-            }
-                
-                
-            default:
-                break;
         }
         
+        
+        
+        assert(pop.ind_population.size() == (number_of_population/2));
         
         for (unsigned int neural = pop.ind_population.size()  ; neural < (number_of_population); neural++) {
             int rand_1 = (rand()%(number_of_population/2));
@@ -121,6 +141,11 @@ int main(int argc, const char * argv[]) {
                 }
             }
         }
+        
+        
+        
+        
+        
         
         assert(pop.ind_population.size() == (number_of_population));
     }
