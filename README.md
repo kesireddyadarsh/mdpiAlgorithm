@@ -1,14 +1,5 @@
 # mdpiAlgorithm
 
-Need to fix right away
-1. Check constraints method should check for search space. 
-
-In progress:
-1. Testing the test function
-2. Testing simple EA
-3. Testing Pareto front creation
-
-
 
 Index	Function Name	Negative Value accepted	Constraints	Coding comments
 
@@ -52,25 +43,25 @@ Evolutionary Algorithms Steps
 
 Index	Title	Coding Status
 
-0	Initialization of member 	In Progress
+0	Initialization of member 	Completed
 
-1	Execution of members 	In Progress
+1	Execution of members 	Completed
 
-2	Creating of fronts	In Progress
+2	Creating of fronts	Completed
 
-3 	Removing with tournament select	In Progress
+3 	Removing with tournament select	Completed
 
-4	Mutation 	In Progress
+4	Mutation 	Completed
 
 Methodologies 
 
 Index	Name of methodology	Coding Comments
 
-0	Simple EA	In Progress
+0	Simple EA	Completed
 
-1 	NSGA - II	
+1 	NSGA - II	Completed
 
-2	NSGA - III	
+2	NSGA - III	In Progress
 
 3 	MPF	
 
