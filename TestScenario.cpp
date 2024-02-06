@@ -208,7 +208,8 @@ vector<double> limitation_values(int case_number){
         }
             
         case 12:{
-            int i_value = rand()%10+1;
+            int i_value = 10;
+            
             vector<double> x_values;
             for(int temp_value=1;temp_value<=i_value;temp_value++){
                 temp_x = fRand(0, 1);
@@ -310,38 +311,19 @@ vector<double> limitation_values(int case_number){
         }
             
         case 16:{
-            for (int i=0; i<100; i++) {
-                temp_x = fRand(-100, -3);
-                temp_x = (int)(temp_x * PRECISION)/PRECISION;
-                temp_y = fRand(3, 100);
-                temp_y = (int)(temp_y * PRECISION)/PRECISION;
-                vector<double> x_value;
-                x_value.push_back(temp_x);
-                x_value.push_back(temp_y);
-                
-                while (!check_constrains_vec(x_value,case_number)) {
-                    temp_x = fRand(-100, -3);
-                    temp_x = (int)(temp_x * PRECISION)/PRECISION;
-                    temp_y = fRand(3, 100);
-                    temp_y = (int)(temp_y * PRECISION)/PRECISION;
-                    x_value.at(0) = temp_x;
-                    x_value.at(1) = temp_y;
-                }
-                //cout<<temp_x<<"\t"<<temp_y<<endl;
-            }
             
-            temp_x = fRand(-100, -3);
+            temp_x = fRand(-3, 100);
             temp_x = (int)(temp_x * PRECISION)/PRECISION;
-            temp_y = fRand(3, 100);
+            temp_y = fRand(-100, 3);
             temp_y = (int)(temp_y * PRECISION)/PRECISION;
             vector<double> x_value;
             x_value.push_back(temp_x);
             x_value.push_back(temp_y);
             
             while (!check_constrains_vec(x_value,case_number)) {
-                temp_x = fRand(-100, -3);
+                temp_x = fRand(-3, 100);
                 temp_x = (int)(temp_x * PRECISION)/PRECISION;
-                temp_y = fRand(3, 100);
+                temp_y = fRand(-100, 3);
                 temp_y = (int)(temp_y * PRECISION)/PRECISION;
                 x_value.at(0) = temp_x;
                 x_value.at(1) = temp_y;
@@ -428,6 +410,7 @@ bool check_constrains_vec(vector<double> x_value_vec, int case_number){
             
         case 3:
         {
+            
             if ((6.5 - (x_value_vec.at(0)/6) - x_value_vec.at(1)) < 0) {
                 return false;
             }
@@ -512,11 +495,22 @@ bool check_constrains_vec(vector<double> x_value_vec, int case_number){
             
         case 11:
         {
-            if (x_value_vec.at(0)<0 ||x_value_vec.at(0) >1) {
+            if (x_value_vec.at(0) < 0 ||x_value_vec.at(0) > 1) {
                 return false;
             }
             
             for (int index = 1 ; index < x_value_vec.size(); index++) {
+                if (x_value_vec.at(index) > 5 || x_value_vec.at(index) < -5 ) {
+                    return false;
+                }
+            }
+            
+            break;
+        }
+            
+        case 12:
+        {
+            for (int index = 0 ; index < x_value_vec.size(); index++) {
                 if (x_value_vec.at(index) < 0 || x_value_vec.at(index) > 1) {
                     return false;
                 }
@@ -570,6 +564,12 @@ bool check_constrains_vec(vector<double> x_value_vec, int case_number){
             
         case 14:
         {
+            if (x_value_vec.at(0) < 0 ) {
+                return false;
+            }
+            if (x_value_vec.at(1) > 1) {
+                return false;
+            }
             double temp = (x_value_vec.at(0)/(1+x_value_vec.at(1)));
             double temp_1 = (1+x_value_vec.at(1))*exp(-temp);
             double temp_2 = 0.858*exp(-0.541*x_value_vec.at(0));
@@ -586,6 +586,13 @@ bool check_constrains_vec(vector<double> x_value_vec, int case_number){
             
         case 15:
         {
+            if (x_value_vec.at(0) < 0.1 || x_value_vec.at(0) >1) {
+                return false;
+            }
+            if (x_value_vec.at(1) < 0 || x_value_vec.at(1) > 5 ) {
+                return false;
+            }
+            
             if (x_value_vec.at(1)+(9*x_value_vec.at(0))<6) {
                 return false;
             }
@@ -595,7 +602,18 @@ bool check_constrains_vec(vector<double> x_value_vec, int case_number){
             
             break;
         }
+           
+        case 16:
+        {
+            if (x_value_vec.at(0) < -3) {
+                return false;
+            }
             
+            if (x_value_vec.at(1) > 3) {
+                return false;
+            }
+            break;
+        }
         
             
         default:
@@ -777,13 +795,13 @@ void exe_function(vector<individual_element>* p_ind_population, int individual, 
         }
             
         case 12:{
-            double f_1_x = 1 - (exp(-4*p_ind_population->at(individual).all_x.at(0)))*(pow(sin(6*PI*p_ind_population->at(individual).all_x.at(0)),6));
+            double f_1_x = 1 - (exp(-4* p_ind_population->at(individual).all_x.at(0))) * (pow(sin(6*PI*p_ind_population->at(individual).all_x.at(0)),6));
             double summation_g_x = 0;
-            for (int i=2; i<=p_ind_population->at(individual).all_x.size(); i++) {
+            for (int i=1; i< p_ind_population->at(individual).all_x.size(); i++) {
                 summation_g_x += p_ind_population->at(individual).all_x.at(i);
             }
-            summation_g_x = 1 + (9*pow(summation_g_x/9,0.25));
-            double h_function = 1- pow(f_1_x/summation_g_x,2);
+            summation_g_x = 1 + (9.0 *pow(summation_g_x/(p_ind_population->at(individual).all_x.size()-1),0.25));
+            double h_function = 1- pow( f_1_x / summation_g_x,2);
             double f_2_x = summation_g_x*h_function;
             p_ind_population->at(individual).fitnes_value.push_back(f_1_x);
             p_ind_population->at(individual).fitnes_value.push_back(f_2_x);
@@ -807,9 +825,11 @@ void exe_function(vector<individual_element>* p_ind_population, int individual, 
             
         case 14:{
             p_ind_population->at(individual).fitnes_value.push_back(p_ind_population->at(individual).all_x.at(0));
+            
             double temp = (p_ind_population->at(individual).all_x.at(0)/(1+p_ind_population->at(individual).all_x.at(1)));
             double f_2_x = (1+p_ind_population->at(individual).all_x.at(1))*exp(-temp);
             p_ind_population->at(individual).fitnes_value.push_back(f_2_x);
+            
             break;
         }
             

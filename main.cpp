@@ -31,10 +31,10 @@ int main(int argc, const char * argv[]) {
     
     population pop;
     int number_of_population = 30;
-    int case_number = 10;//This is objective number
-    int number_of_objectives = 2;
+    int case_number = 16;//This is objective number
+    int number_of_objectives = 3;
     
-    for (int generation = 0 ; generation < 1000; generation++) {
+    for (int generation = 0 ; generation < 100; generation++) {
         if (generation == 0 ) {
             for (int individual = 0; individual < number_of_population; individual++) {
                 individual_element element;
