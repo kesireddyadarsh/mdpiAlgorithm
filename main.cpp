@@ -17,7 +17,7 @@
 #include "printToFile.hpp"
 #include "simpleEA.hpp"
 #include "nsga_ii.hpp"
-
+#include "nsga_iii.hpp"
 
 using namespace std;
 
@@ -32,7 +32,7 @@ int main(int argc, const char * argv[]) {
     
     population pop;
     int number_of_population = 30;
-    int case_number = 4;//This is objective number
+    int case_number = 0;//This is objective number
     int number_of_objectives = 2;
     
     for (int generation = 0 ; generation < 1000; generation++) {
@@ -81,7 +81,7 @@ int main(int argc, const char * argv[]) {
                 }
             }
         }else{
-            int case_to_study = 1;
+            int case_to_study = 2;
             switch (case_to_study) {
                 case 0:
                 {
@@ -97,7 +97,7 @@ int main(int argc, const char * argv[]) {
                     
                 case 2:
                 {
-    //                nsga_iii(pop.p_ind_population, number_of_objectives, generation, negative_value_accepted);
+                    nsga_iii(pop.p_ind_population, number_of_objectives, generation, negative_value_accepted,hold_values_for_algorithm);
                     break;
                 }
                     
