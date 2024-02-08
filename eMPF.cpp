@@ -8,7 +8,7 @@
 #include "eMPF.hpp"
 
 
-void mpf(vector<individual_element>* p_ind_population,int number_of_objectives , int generation_number, bool negative_value_accepted, vector<vector<int>> work_on_this){
+void empf(vector<individual_element>* p_ind_population,int number_of_objectives , int generation_number, bool negative_value_accepted, vector<vector<int>> work_on_this){
     
     int number_of_individuals = p_ind_population->size();
     int front_number_to_select = work_on_this.at(0).at(2);
