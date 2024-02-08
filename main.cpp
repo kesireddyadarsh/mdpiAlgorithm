@@ -18,6 +18,8 @@
 #include "simpleEA.hpp"
 #include "nsga_ii.hpp"
 #include "nsga_iii.hpp"
+#include "MPF.hpp"
+#include "eMPF.hpp"
 
 using namespace std;
 
@@ -81,7 +83,7 @@ int main(int argc, const char * argv[]) {
                 }
             }
         }else{
-            int case_to_study = 2;
+            int case_to_study = 4;
             switch (case_to_study) {
                 case 0:
                 {
@@ -103,13 +105,13 @@ int main(int argc, const char * argv[]) {
                     
                 case 3:
                 {
-    //                mpf(pop.p_ind_population, number_of_objectives, generation, negative_value_accepted);
+                    mpf(pop.p_ind_population, number_of_objectives, generation, negative_value_accepted, hold_values_for_algorithm);
                     break;
                 }
                     
                 case 4:
                 {
-    //                empf(pop.p_ind_population, number_of_objectives, generation, negative_value_accepted,case_number);
+                    empf(pop.p_ind_population, number_of_objectives, generation, negative_value_accepted, hold_values_for_algorithm);
                     break;
                 }
                     
