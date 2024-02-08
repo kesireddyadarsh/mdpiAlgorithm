@@ -63,6 +63,6 @@ Index	Name of methodology	Coding Comments
 
 2	NSGA - III	Completed
 
-3 	MPF	 In Progress
+3 	MPF	 Completed
 
-4 	eMPF	
+4 	eMPF	Completed
