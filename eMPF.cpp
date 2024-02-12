@@ -10,6 +10,7 @@
 
 void empf(vector<individual_element>* p_ind_population,int number_of_objectives , int generation_number, bool negative_value_accepted, vector<vector<int>> work_on_this){
     
+    bool constant_weight = true;
     int number_of_individuals = p_ind_population->size();
     int front_number_to_select = work_on_this.at(0).at(2);
     int mpf_front = work_on_this.at(0).at(2);
@@ -19,62 +20,70 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
             fronts.push_back(individual);
         }
     }
+    vector<double> degree_of_diversification;
     
-    //Calculating entropy
-    double entropy_h = 0.0;
-    if (fronts.size() == 1) {
-        entropy_h = 1.0;
+    if (constant_weight) {
+        double equal_weight = 1/number_of_objectives;
+        for (int objective = 0 ; objective < number_of_objectives; objective++) {
+            degree_of_diversification.push_back(equal_weight);
+        }
     }else{
-        entropy_h = 1/log(fronts.size());
-    }
-    
-    //Calculating entropy of each objective
-    vector<double> entropy_objectives;
-    for (int objective = 0 ; objective < number_of_objectives; objective++) {
-        //First summation of each objective
-        double summation_of_fitness = 0.0;
-        for (int individual = 0 ; individual < fronts.size(); individual++) {
-            summation_of_fitness += p_ind_population->at(fronts.at(individual)).fitnes_value.at(objective);
+        
+        //Calculating entropy
+        double constant_h = 0.0;
+        if (fronts.size() == 1) {
+            constant_h = 1.0;
+        }else{
+            constant_h = 1/log(fronts.size());
         }
         
-        //Normalization of the fitness values
-        for (int individual = 0 ; individual < fronts.size(); individual++) {
-            p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.push_back(p_ind_population->at(fronts.at(individual)).fitnes_value.at(objective)/summation_of_fitness);
-        }
-    }
-    
-    for (int main_loop_objective = 0 ; main_loop_objective < number_of_objectives; main_loop_objective++) {
-        double summation = 0.0;
-        for (int individual = 0 ; individual < fronts.size(); individual++) {
-            double temp_natural_log = 0.0;
-            if (p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.at(main_loop_objective) == 0) {
-                temp_natural_log = 0.0;
-            }else if (p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.at(main_loop_objective) <0){
-                temp_natural_log = log(-p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.at(main_loop_objective));
-            }else{
-                temp_natural_log = log(p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.at(main_loop_objective));
+        //Calculating entropy of each objective
+        vector<double> entropy_objectives;
+        for (int objective = 0 ; objective < number_of_objectives; objective++) {
+            //First summation of each objective
+            double summation_of_fitness = 0.0;
+            for (int individual = 0 ; individual < fronts.size(); individual++) {
+                summation_of_fitness += p_ind_population->at(fronts.at(individual)).fitnes_value.at(objective);
             }
             
-            summation += (p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.at(main_loop_objective)*temp_natural_log);
+            //Normalization of the fitness values
+            for (int individual = 0 ; individual < fronts.size(); individual++) {
+                p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.push_back(p_ind_population->at(fronts.at(individual)).fitnes_value.at(objective)/summation_of_fitness);
+            }
         }
-        entropy_objectives.push_back(summation*(-entropy_h));
+        
+        for (int main_loop_objective = 0 ; main_loop_objective < number_of_objectives; main_loop_objective++) {
+            double summation = 0.0;
+            for (int individual = 0 ; individual < fronts.size(); individual++) {
+                double temp_natural_log = 0.0;
+                if (p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.at(main_loop_objective) == 0) {
+                    temp_natural_log = 0.0;
+                }else if (p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.at(main_loop_objective) <0){
+                    temp_natural_log = log(-p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.at(main_loop_objective));
+                }else{
+                    temp_natural_log = log(p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.at(main_loop_objective));
+                }
+                
+                summation += (p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.at(main_loop_objective)*temp_natural_log);
+            }
+            entropy_objectives.push_back(summation*(-constant_h));
+        }
+        assert(entropy_objectives.size() == number_of_objectives);
+        
+        
+        double summation_of_diversification = 0.0;
+        for (int objective = 0 ; objective < entropy_objectives.size(); objective++) {
+            double temp = entropy_objectives.at(objective) -1;
+            degree_of_diversification.push_back( temp);
+            summation_of_diversification += temp;
+        }
+        assert(degree_of_diversification.size() == number_of_objectives);
+        
+        for (int objective = 0 ; objective < number_of_objectives; objective++) {
+            degree_of_diversification.at(objective) /= summation_of_diversification;
+        }
+        
     }
-    assert(entropy_objectives.size() == number_of_objectives);
-    
-    vector<double> degree_of_diversification;
-    double summation_of_diversification = 0.0;
-    for (int objective = 0 ; objective < entropy_objectives.size(); objective++) {
-        double temp = entropy_objectives.at(objective) -1;
-        degree_of_diversification.push_back( temp);
-        summation_of_diversification += temp;
-    }
-    assert(degree_of_diversification.size() == number_of_objectives);
-    
-    for (int objective = 0 ; objective < number_of_objectives; objective++) {
-        degree_of_diversification.at(objective) /= summation_of_diversification;
-    }
-    
-    
     
     int best_index = 999999;
     double best_value = 99999999.99999;
