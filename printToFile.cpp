@@ -17,8 +17,8 @@ void printValues(population pop,int generation){
         reward_file.open(buf_2);
         reward_file.exceptions(std::ifstream::failbit);
         for (int team_number = 0 ; team_number < pop.ind_population.size(); team_number++) {
-            for (int si = 0 ; si < pop.ind_population.at(team_number).fitnes_value.size(); si++) {
-                reward_file<<pop.ind_population.at(team_number).fitnes_value.at(si)<<"\t";
+            for (int si = 0 ; si < pop.ind_population.at(team_number).fitness_value.size(); si++) {
+                reward_file<<pop.ind_population.at(team_number).fitness_value.at(si)<<"\t";
             }
             reward_file<<"\n";
         }

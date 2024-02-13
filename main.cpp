@@ -56,8 +56,9 @@ int main(int argc, const char * argv[]) {
             
             for (int individual = 0; individual < number_of_population; individual++) {
                 pop.ind_population.at(individual).remove_me = false;
-                pop.ind_population.at(individual).fitnes_value.clear();
+                pop.ind_population.at(individual).fitness_value.clear();
                 pop.ind_population.at(individual).normalized_fitness_values.clear();
+                pop.ind_population.at(individual).overall_normalized_fitness_values.clear();
                 pop.ind_population.at(individual).crowding_distance = 0.0;
                 
                 exe_function( pop.p_ind_population, individual, case_number);

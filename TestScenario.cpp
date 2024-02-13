@@ -627,16 +627,16 @@ void exe_function(vector<individual_element>* p_ind_population, int individual, 
     
     switch (case_number) {
         case 0:{
-            p_ind_population->at(individual).fitnes_value.push_back( (4 * p_ind_population->at(individual).all_x.at(0) * p_ind_population->at(individual).all_x.at(0)) + ( 4 * p_ind_population->at(individual).all_x.at(1) * p_ind_population->at(individual).all_x.at(1)) );
-            p_ind_population->at(individual).fitnes_value.push_back( ((p_ind_population->at(individual).all_x.at(0) - 5)* (p_ind_population->at(individual).all_x.at(0) - 5))  + ((p_ind_population->at(individual).all_x.at(1) - 5) *(p_ind_population->at(individual).all_x.at(1) - 5)));
+            p_ind_population->at(individual).fitness_value.push_back( (4 * p_ind_population->at(individual).all_x.at(0) * p_ind_population->at(individual).all_x.at(0)) + ( 4 * p_ind_population->at(individual).all_x.at(1) * p_ind_population->at(individual).all_x.at(1)) );
+            p_ind_population->at(individual).fitness_value.push_back( ((p_ind_population->at(individual).all_x.at(0) - 5)* (p_ind_population->at(individual).all_x.at(0) - 5))  + ((p_ind_population->at(individual).all_x.at(1) - 5) *(p_ind_population->at(individual).all_x.at(1) - 5)));
             break;
         }
             
         case 1:{
             
-            p_ind_population->at(individual).fitnes_value.push_back( 2 + ((p_ind_population->at(individual).all_x.at(0) - 2) * (p_ind_population->at(individual).all_x.at(0) - 2)) + ((p_ind_population->at(individual).all_x.at(1) - 1) * (p_ind_population->at(individual).all_x.at(1) - 1)) );
+            p_ind_population->at(individual).fitness_value.push_back( 2 + ((p_ind_population->at(individual).all_x.at(0) - 2) * (p_ind_population->at(individual).all_x.at(0) - 2)) + ((p_ind_population->at(individual).all_x.at(1) - 1) * (p_ind_population->at(individual).all_x.at(1) - 1)) );
             
-            p_ind_population->at(individual).fitnes_value.push_back((9*p_ind_population->at(individual).all_x.at(0)) - (((p_ind_population->at(individual).all_x.at(1) -1) * (p_ind_population->at(individual).all_x.at(1) -1))) );
+            p_ind_population->at(individual).fitness_value.push_back((9*p_ind_population->at(individual).all_x.at(0)) - (((p_ind_population->at(individual).all_x.at(1) -1) * (p_ind_population->at(individual).all_x.at(1) -1))) );
             
             break;
         }
@@ -653,17 +653,17 @@ void exe_function(vector<individual_element>* p_ind_population, int individual, 
                 summation_2 += ((p_ind_population->at(individual).all_x.at(i) + (1/sqrt(p_ind_population->at(individual).all_x.size()))) * (p_ind_population->at(individual).all_x.at(i) + (1/sqrt(p_ind_population->at(individual).all_x.size()))));
             }
             
-            p_ind_population->at(individual).fitnes_value.push_back(1-exp(-(summation_1)));
-            p_ind_population->at(individual).fitnes_value.push_back(1-exp(-(summation_2)));
+            p_ind_population->at(individual).fitness_value.push_back(1-exp(-(summation_1)));
+            p_ind_population->at(individual).fitness_value.push_back(1-exp(-(summation_2)));
             
             break;
         }
             
         case 3:{
             
-            p_ind_population->at(individual).fitnes_value.push_back( (p_ind_population->at(individual).all_x.at(0) * p_ind_population->at(individual).all_x.at(0)) - p_ind_population->at(individual).all_x.at(1) );
+            p_ind_population->at(individual).fitness_value.push_back( (p_ind_population->at(individual).all_x.at(0) * p_ind_population->at(individual).all_x.at(0)) - p_ind_population->at(individual).all_x.at(1) );
             
-            p_ind_population->at(individual).fitnes_value.push_back( (-0.5 * p_ind_population->at(individual).all_x.at(0)) - p_ind_population->at(individual).all_x.at(1) - 1);
+            p_ind_population->at(individual).fitness_value.push_back( (-0.5 * p_ind_population->at(individual).all_x.at(0)) - p_ind_population->at(individual).all_x.at(1) - 1);
             
             break;
         }
@@ -677,7 +677,7 @@ void exe_function(vector<individual_element>* p_ind_population, int individual, 
                 summation += -10 * exp( -0.2 * sqrt( pow( p_ind_population->at(individual).all_x.at(temp),2) + pow(p_ind_population->at(individual).all_x.at(temp+1),2) ) );
             }
             
-            p_ind_population->at(individual).fitnes_value.push_back(summation);
+            p_ind_population->at(individual).fitness_value.push_back(summation);
             
             //This is second part
             summation = 0.0;
@@ -685,16 +685,16 @@ void exe_function(vector<individual_element>* p_ind_population, int individual, 
                 summation += ( pow(abs(p_ind_population->at(individual).all_x.at(temp_var)),0.8) + (5 * (sin((pow((p_ind_population->at(individual).all_x.at(temp_var)),3)) *3.14159/180))));
             }
             
-            p_ind_population->at(individual).fitnes_value.push_back(summation);
+            p_ind_population->at(individual).fitness_value.push_back(summation);
             
             break;
         }
             
         case 5:{
             
-            p_ind_population->at(individual).fitnes_value.push_back( p_ind_population->at(individual).all_x.at(0) * p_ind_population->at(individual).all_x.at(0));
+            p_ind_population->at(individual).fitness_value.push_back( p_ind_population->at(individual).all_x.at(0) * p_ind_population->at(individual).all_x.at(0));
             
-            p_ind_population->at(individual).fitnes_value.push_back(pow((p_ind_population->at(individual).all_x.at(0) - 2), 2));
+            p_ind_population->at(individual).fitness_value.push_back(pow((p_ind_population->at(individual).all_x.at(0) - 2), 2));
             break;
         }
             
@@ -702,22 +702,22 @@ void exe_function(vector<individual_element>* p_ind_population, int individual, 
             
             if (p_ind_population->at(individual).all_x.at(0) <= 1)
             {
-                p_ind_population->at(individual).fitnes_value.push_back(-p_ind_population->at(individual).all_x.at(0));
+                p_ind_population->at(individual).fitness_value.push_back(-p_ind_population->at(individual).all_x.at(0));
             }
             else if ((1 < p_ind_population->at(individual).all_x.at(0))||(p_ind_population->at(individual).all_x.at(0) <= 3))
             {
-                p_ind_population->at(individual).fitnes_value.push_back(p_ind_population->at(individual).all_x.at(0) - 2);
+                p_ind_population->at(individual).fitness_value.push_back(p_ind_population->at(individual).all_x.at(0) - 2);
             }
             else if ((3 < p_ind_population->at(individual).all_x.at(0))||(p_ind_population->at(individual).all_x.at(0) <= 4))
             {
-                p_ind_population->at(individual).fitnes_value.push_back(4 - p_ind_population->at(individual).all_x.at(0));
+                p_ind_population->at(individual).fitness_value.push_back(4 - p_ind_population->at(individual).all_x.at(0));
             }
             else if (p_ind_population->at(individual).all_x.at(0) > 4)
             {
-                p_ind_population->at(individual).fitnes_value.push_back(p_ind_population->at(individual).all_x.at(0) - 4);
+                p_ind_population->at(individual).fitness_value.push_back(p_ind_population->at(individual).all_x.at(0) - 4);
             }
             
-            p_ind_population->at(individual).fitnes_value.push_back(pow((p_ind_population->at(individual).all_x.at(0) - 5), 2));
+            p_ind_population->at(individual).fitness_value.push_back(pow((p_ind_population->at(individual).all_x.at(0) - 5), 2));
             
             break;
         }
@@ -729,8 +729,8 @@ void exe_function(vector<individual_element>* p_ind_population, int individual, 
             double b_2 = ((1.5*sin(p_ind_population->at(individual).all_x.at(0))) - (cos(p_ind_population->at(individual).all_x.at(0))) + (2*sin(p_ind_population->at(individual).all_x.at(1))) - (0.5*cos(p_ind_population->at(individual).all_x.at(1))));
             double f_1_x = 1+ pow(a_1-b_1,2)+ pow(a_2-b_2,2);
             double f_2_x = pow(p_ind_population->at(individual).all_x.at(0)+3,2)+pow(p_ind_population->at(individual).all_x.at(1)+1,2);
-            p_ind_population->at(individual).fitnes_value.push_back(f_1_x);
-            p_ind_population->at(individual).fitnes_value.push_back(f_2_x);
+            p_ind_population->at(individual).fitness_value.push_back(f_1_x);
+            p_ind_population->at(individual).fitness_value.push_back(f_2_x);
             break;
         }
             
@@ -742,8 +742,8 @@ void exe_function(vector<individual_element>* p_ind_population, int individual, 
             summation_g_x = 1 + (9.0/(p_ind_population->at(individual).all_x.size()-1))*summation_g_x;
             double h_function = 1- sqrt(p_ind_population->at(individual).all_x.at(0)/summation_g_x);
             double f_2_x = summation_g_x*h_function;
-            p_ind_population->at(individual).fitnes_value.push_back(p_ind_population->at(individual).all_x.at(0));
-            p_ind_population->at(individual).fitnes_value.push_back(f_2_x);
+            p_ind_population->at(individual).fitness_value.push_back(p_ind_population->at(individual).all_x.at(0));
+            p_ind_population->at(individual).fitness_value.push_back(f_2_x);
             
             break;
         }
@@ -758,8 +758,8 @@ void exe_function(vector<individual_element>* p_ind_population, int individual, 
             double h_function = 1- pow((p_ind_population->at(individual).all_x.at(0)/summation_g_x),2);
             
             double f_2_x = summation_g_x*h_function;
-            p_ind_population->at(individual).fitnes_value.push_back(p_ind_population->at(individual).all_x.at(0));
-            p_ind_population->at(individual).fitnes_value.push_back(f_2_x);
+            p_ind_population->at(individual).fitness_value.push_back(p_ind_population->at(individual).all_x.at(0));
+            p_ind_population->at(individual).fitness_value.push_back(f_2_x);
             break;
         }
             
@@ -771,10 +771,10 @@ void exe_function(vector<individual_element>* p_ind_population, int individual, 
             
             summation_g_x = 1 +(9.0/(p_ind_population->at(individual).all_x.size() - 1))*summation_g_x;
             
-            p_ind_population->at(individual).fitnes_value.push_back(p_ind_population->at(individual).all_x.at(0));
+            p_ind_population->at(individual).fitness_value.push_back(p_ind_population->at(individual).all_x.at(0));
             double h_function = 1- sqrt(p_ind_population->at(individual).all_x.at(0)/summation_g_x) - ((p_ind_population->at(individual).all_x.at(0)/summation_g_x)*sin(10*PI*p_ind_population->at(individual).all_x.at(0)));
             double f_2_x = summation_g_x*h_function;
-            p_ind_population->at(individual).fitnes_value.push_back(f_2_x);
+            p_ind_population->at(individual).fitness_value.push_back(f_2_x);
             break;
         }
             
@@ -789,8 +789,8 @@ void exe_function(vector<individual_element>* p_ind_population, int individual, 
             double f_1_x = p_ind_population->at(individual).all_x.at(0);
             double h_function = 1- sqrt(f_1_x/summation_g_x);
             double f_2_x = summation_g_x*h_function;
-            p_ind_population->at(individual).fitnes_value.push_back(f_1_x);
-            p_ind_population->at(individual).fitnes_value.push_back(f_2_x);
+            p_ind_population->at(individual).fitness_value.push_back(f_1_x);
+            p_ind_population->at(individual).fitness_value.push_back(f_2_x);
             break;
         }
             
@@ -803,8 +803,8 @@ void exe_function(vector<individual_element>* p_ind_population, int individual, 
             summation_g_x = 1 + (9.0 *pow(summation_g_x/(p_ind_population->at(individual).all_x.size()-1),0.25));
             double h_function = 1- pow( f_1_x / summation_g_x,2);
             double f_2_x = summation_g_x*h_function;
-            p_ind_population->at(individual).fitnes_value.push_back(f_1_x);
-            p_ind_population->at(individual).fitnes_value.push_back(f_2_x);
+            p_ind_population->at(individual).fitness_value.push_back(f_1_x);
+            p_ind_population->at(individual).fitness_value.push_back(f_2_x);
             break;
         }
             
@@ -814,38 +814,38 @@ void exe_function(vector<individual_element>* p_ind_population, int individual, 
             double temp_3 = pow(p_ind_population->at(individual).all_x.at(2) -1, 2);
             double temp_4 = pow(p_ind_population->at(individual).all_x.at(3) -4, 2);
             double temp_5 = pow(p_ind_population->at(individual).all_x.at(4) -1, 2);
-            p_ind_population->at(individual).fitnes_value.push_back( temp_1 - temp_2 - temp_3 - temp_4 - temp_5);
+            p_ind_population->at(individual).fitness_value.push_back( temp_1 - temp_2 - temp_3 - temp_4 - temp_5);
             double temp_summation = 0.0;
             for(int i=0;i<p_ind_population->at(individual).all_x.size();i++){
                 temp_summation += pow(p_ind_population->at(individual).all_x.at(i), 2);
             }
-            p_ind_population->at(individual).fitnes_value.push_back( temp_summation);
+            p_ind_population->at(individual).fitness_value.push_back( temp_summation);
             break;
         }
             
         case 14:{
-            p_ind_population->at(individual).fitnes_value.push_back(p_ind_population->at(individual).all_x.at(0));
+            p_ind_population->at(individual).fitness_value.push_back(p_ind_population->at(individual).all_x.at(0));
             
             double temp = (p_ind_population->at(individual).all_x.at(0)/(1+p_ind_population->at(individual).all_x.at(1)));
             double f_2_x = (1+p_ind_population->at(individual).all_x.at(1))*exp(-temp);
-            p_ind_population->at(individual).fitnes_value.push_back(f_2_x);
+            p_ind_population->at(individual).fitness_value.push_back(f_2_x);
             
             break;
         }
             
         case 15:{
-            p_ind_population->at(individual).fitnes_value.push_back(p_ind_population->at(individual).all_x.at(0));
-            p_ind_population->at(individual).fitnes_value.push_back((p_ind_population->at(individual).all_x.at(1) + 1)/p_ind_population->at(individual).all_x.at(0));
+            p_ind_population->at(individual).fitness_value.push_back(p_ind_population->at(individual).all_x.at(0));
+            p_ind_population->at(individual).fitness_value.push_back((p_ind_population->at(individual).all_x.at(1) + 1)/p_ind_population->at(individual).all_x.at(0));
             break;
         }
             
         case 16:{
             double summation_x_y = pow(p_ind_population->at(individual).all_x.at(0), 2) + pow(p_ind_population->at(individual).all_x.at(1), 2);
-            p_ind_population->at(individual).fitnes_value.push_back(0.5*summation_x_y + sin(summation_x_y));
+            p_ind_population->at(individual).fitness_value.push_back(0.5*summation_x_y + sin(summation_x_y));
             double numerator_1 = pow(((3*p_ind_population->at(individual).all_x.at(0))-(2*p_ind_population->at(individual).all_x.at(1))+4),2);
             double numerator_2 = pow((p_ind_population->at(individual).all_x.at(0) - p_ind_population->at(individual).all_x.at(1) +1), 2);
-            p_ind_population->at(individual).fitnes_value.push_back((numerator_1/8)+(numerator_2/27)+15);
-            p_ind_population->at(individual).fitnes_value.push_back((1/(summation_x_y+1))-(1.1*exp(-summation_x_y)));
+            p_ind_population->at(individual).fitness_value.push_back((numerator_1/8)+(numerator_2/27)+15);
+            p_ind_population->at(individual).fitness_value.push_back((1/(summation_x_y+1))-(1.1*exp(-summation_x_y)));
         }
             
     }

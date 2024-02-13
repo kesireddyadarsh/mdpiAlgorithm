@@ -23,188 +23,109 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
     vector<double> degree_of_diversification;
     
     if (constant_weight) {
-        double equal_weight = 1/number_of_objectives;
+        double equal_weight = 1.0/number_of_objectives;
         for (int objective = 0 ; objective < number_of_objectives; objective++) {
             degree_of_diversification.push_back(equal_weight);
         }
     }else{
         
-        //Calculating entropy
-        double constant_h = 0.0;
-        if (fronts.size() == 1) {
-            constant_h = 1.0;
-        }else{
-            constant_h = 1/log(fronts.size());
-        }
+        double constant_h = (fronts.size() == 1) ? 1.0 : 1.0 / log(fronts.size());
+        vector<double> entropy_objectives(number_of_objectives, 0.0);
         
-        //Calculating entropy of each objective
-        vector<double> entropy_objectives;
-        for (int objective = 0 ; objective < number_of_objectives; objective++) {
-            //First summation of each objective
-            double summation_of_fitness = 0.0;
-            for (int individual = 0 ; individual < fronts.size(); individual++) {
-                summation_of_fitness += p_ind_population->at(fronts.at(individual)).fitnes_value.at(objective);
+        // Assuming Individual structure and fitness_value are defined correctly
+        for (int objective = 0; objective < number_of_objectives; objective++) {
+            double min_fitness = numeric_limits<double>::max();
+            double sum_positive_shifted_fitness = 0.0;
+            
+            // Find minimum fitness value for the objective to shift all values to positive
+            for (int individual : fronts) {
+                double fitness = p_ind_population->at(individual).fitness_value[objective];
+                min_fitness = min(min_fitness, fitness);
+            }
+            double shift_value = (min_fitness < 0) ? abs(min_fitness) + 1 : 0;
+            
+            // Calculate shifted sum for normalization
+            for (int individual : fronts) {
+                double shifted_fitness = p_ind_population->at(individual).fitness_value[objective] + shift_value;
+                sum_positive_shifted_fitness += shifted_fitness;
             }
             
-            //Normalization of the fitness values
-            for (int individual = 0 ; individual < fronts.size(); individual++) {
-                p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.push_back(p_ind_population->at(fronts.at(individual)).fitnes_value.at(objective)/summation_of_fitness);
-            }
-        }
-        
-        for (int main_loop_objective = 0 ; main_loop_objective < number_of_objectives; main_loop_objective++) {
-            double summation = 0.0;
-            for (int individual = 0 ; individual < fronts.size(); individual++) {
-                double temp_natural_log = 0.0;
-                if (p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.at(main_loop_objective) == 0) {
-                    temp_natural_log = 0.0;
-                }else if (p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.at(main_loop_objective) <0){
-                    temp_natural_log = log(-p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.at(main_loop_objective));
-                }else{
-                    temp_natural_log = log(p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.at(main_loop_objective));
-                }
+            // Calculate normalized values and entropy for each objective
+            vector<double> normalized_fitness(fronts.size(), 0.0);
+            for (int i = 0; i < fronts.size(); i++) {
+                int individual = fronts[i];
+                normalized_fitness[i] = (p_ind_population->at(individual).fitness_value[objective] + shift_value) / sum_positive_shifted_fitness;
                 
-                summation += (p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.at(main_loop_objective)*temp_natural_log);
+                // Avoid log(0) by ensuring there's a minimal positive value
+                if (normalized_fitness[i] > 0) {
+                    entropy_objectives[objective] -= normalized_fitness[i] * log(normalized_fitness[i]);
+                }
             }
-            entropy_objectives.push_back(summation*(-constant_h));
+            entropy_objectives[objective] *= constant_h;
         }
+        
+        // Calculate degree of diversification
+        double sum_of_diversification = 0.0;
+        for (int objective = 0; objective < number_of_objectives; objective++) {
+            degree_of_diversification[objective] = entropy_objectives[objective] - 1;
+            sum_of_diversification += degree_of_diversification[objective];
+        }
+        for (int objective = 0; objective < number_of_objectives; objective++) {
+            degree_of_diversification[objective] /= sum_of_diversification;
+        }
+        
+        // Your validation or further processing
         assert(entropy_objectives.size() == number_of_objectives);
-        
-        
-        double summation_of_diversification = 0.0;
-        for (int objective = 0 ; objective < entropy_objectives.size(); objective++) {
-            double temp = entropy_objectives.at(objective) -1;
-            degree_of_diversification.push_back( temp);
-            summation_of_diversification += temp;
-        }
         assert(degree_of_diversification.size() == number_of_objectives);
-        
-        for (int objective = 0 ; objective < number_of_objectives; objective++) {
-            degree_of_diversification.at(objective) /= summation_of_diversification;
-        }
         
     }
     
-    int best_index = 999999;
-    double best_value = 99999999.99999;
+    int best_index = -1;
+    double best_value = std::numeric_limits<double>::max();
     
     if (fronts.size() >= 2) {
-        //double weights = 0.50;
-        //cout<<weights<<endl;
-        vector<double> ideal_best;
-        vector<double> ideal_worst;
-        vector<int> index_ideal_best;
-        vector<int> index_ideal_worst;
+        vector<double> ideal_best(number_of_objectives, std::numeric_limits<double>::lowest());
+        vector<double> ideal_worst(number_of_objectives, std::numeric_limits<double>::max());
         
-        for (int objective = 0; objective < number_of_objectives; objective++) {
-            double summation_objective = 0.0;
-            for (int individual = 0 ; individual < fronts.size(); individual++) {
-                summation_objective += (p_ind_population->at(fronts.at(individual)).fitnes_value.at(objective)); //*p_ind_population->at(fronts.at(0).at(individual)).fitnes_value.at(objective));
-                p_ind_population->at(fronts.at(individual)).euclidean_best = 9999999.99999;
-                p_ind_population->at(fronts.at(individual)).eculidean_worst = -9999999.99999;
-            }
-            //cout<<summation_objective<<endl;
-            
-            for (int individual = 0 ; individual < fronts.size(); individual++) {
-                if (summation_objective == 0) {
-                    summation_objective = 0.00001;
-                }
-                //cout<<summation_objective<<endl;
-                if (summation_objective < 0) {
-                    p_ind_population->at(fronts.at(individual)).normalized_fitness_values.push_back( (degree_of_diversification.at(objective) * (p_ind_population->at(fronts.at(individual)).fitnes_value.at(objective)) / sqrt(-summation_objective)));
-                }else{
-                    p_ind_population->at(fronts.at(individual)).normalized_fitness_values.push_back( (degree_of_diversification.at(objective) * (p_ind_population->at(fronts.at(individual)).fitnes_value.at(objective)) / sqrt(summation_objective)));
-                }
-            }
-            
-            double temp_ideal_best =999999999.99999;
-            double temp_ideal_worst =  -9999999999.99999;
-            int temp_index_ideal_best = 999999;
-            int temp_index_ideal_worst = 999999;
-            
-            for (int individual = 0; individual < fronts.size(); individual++) {
-                if (temp_ideal_best > p_ind_population->at(fronts.at(individual)).normalized_fitness_values.at(objective)) {
-                    temp_ideal_best = p_ind_population->at(fronts.at(individual)).normalized_fitness_values.at(objective);
-                    temp_index_ideal_best = individual;
-                }
+        // Calculate normalized values based on degree_of_diversification and fitness values
+        for (int individual : fronts) {
+            for (int objective = 0; objective < number_of_objectives; objective++) {
+                double normalized_value = degree_of_diversification[objective] * p_ind_population->at(individual).fitness_value[objective];
+                p_ind_population->at(individual).normalized_fitness_values.push_back(normalized_value);
                 
-                if (temp_ideal_worst < p_ind_population->at(fronts.at(individual)).normalized_fitness_values.at(objective)) {
-                    temp_ideal_worst = p_ind_population->at(fronts.at(individual)).normalized_fitness_values.at(objective);
-                    temp_index_ideal_worst = individual;
-                }
+                // Update ideal best and worst
+                ideal_best[objective] = max(ideal_best[objective], normalized_value);
+                ideal_worst[objective] = min(ideal_worst[objective], normalized_value);
             }
-            
-            if (temp_ideal_best == temp_ideal_worst) {
-                temp_index_ideal_best = rand()%fronts.size();
-                temp_index_ideal_worst = rand()%fronts.size();
-            }
-            
-            ideal_best.push_back(temp_ideal_best);
-            ideal_worst.push_back(temp_ideal_worst);
-            index_ideal_best.push_back(temp_index_ideal_best);
-            index_ideal_worst.push_back(temp_index_ideal_worst);
         }
         
-        if (fronts.size() != 2) {
-            for (int individual = 0 ; individual < fronts.size(); individual++) {
-                double temp_best_summation = 0.0;
-                double temp_worst_summation = 0.0;
-                for (int objective = 0 ; objective < number_of_objectives ; objective++) {
-                    temp_best_summation += pow(p_ind_population->at(fronts.at(individual)).normalized_fitness_values.at(objective)-ideal_best.at(objective), 2);
-                    temp_worst_summation += pow(p_ind_population->at(fronts.at(individual)).normalized_fitness_values.at(objective)-ideal_worst.at(objective), 2);
-                }
-                if (temp_best_summation == 0) {
-                    temp_best_summation = 0.00001;
-                }
-                if (temp_worst_summation == 0) {
-                    temp_worst_summation = 0.00001;
-                }
-                
-                if (temp_best_summation < 0) {
-                    p_ind_population->at(fronts.at(individual)).euclidean_best = sqrt(-temp_best_summation);
-                }else{
-                    p_ind_population->at(fronts.at(individual)).euclidean_best = sqrt(temp_best_summation);
-                }
-                
-                if (temp_worst_summation < 0) {
-                    p_ind_population->at(fronts.at(individual)).eculidean_worst = sqrt(-temp_worst_summation);
-                }else{
-                    p_ind_population->at(fronts.at(individual)).eculidean_worst = sqrt(temp_worst_summation);
-                }
-                //p_ind_population->at(fronts.at(0).at(individual)).euclidean_best = sqrt(temp_best_summation);
-                //p_ind_population->at(fronts.at(0).at(individual)).eculidean_worst = sqrt(temp_worst_summation);
-                p_ind_population->at(fronts.at(individual)).performance_score = p_ind_population->at(fronts.at(individual)).eculidean_worst/(p_ind_population->at(fronts.at(individual)).eculidean_worst+p_ind_population->at(fronts.at(individual)).euclidean_best);
+        // Calculate Euclidean distances and performance score
+        for (int individual : fronts) {
+            double euclidean_best = 0.0;
+            double euclidean_worst = 0.0;
+            for (int objective = 0; objective < number_of_objectives; objective++) {
+                euclidean_best += pow(p_ind_population->at(individual).normalized_fitness_values[objective] - ideal_best[objective], 2);
+                euclidean_worst += pow(p_ind_population->at(individual).normalized_fitness_values[objective] - ideal_worst[objective], 2);
             }
+            p_ind_population->at(individual).euclidean_best = sqrt(euclidean_best);
+            p_ind_population->at(individual).eculidean_worst = sqrt(euclidean_worst);
             
-            for (int individual = 0 ; individual < fronts.size(); individual++) {
-                if (best_value > p_ind_population->at(fronts.at(individual)).performance_score) {
-                    best_value = p_ind_population->at(fronts.at(individual)).performance_score;
-                    best_index = individual;
-                }
-            }
-            if (best_index == 999999) {
-                cout<<"Work here"<<endl;
-            }
+            // Calculate performance score
+            p_ind_population->at(individual).performance_score = p_ind_population->at(individual).eculidean_worst / (p_ind_population->at(individual).eculidean_worst + p_ind_population->at(individual).euclidean_best);
             
-        }else{
-            
-            for (int individual = 0; individual < fronts.size(); individual++) {
-                p_ind_population->at(fronts.at(individual)).summation_fitness_value = 0.0;
-                for (int fit = 0; fit < p_ind_population->at(fronts.at(individual)).normalized_fitness_values.size(); fit++) {
-                    p_ind_population->at(fronts.at(individual)).normalized_fitness_values.at(fit) = (p_ind_population->at(fronts.at(individual)).normalized_fitness_values.at(fit) * degree_of_diversification.at(fit));
-                    p_ind_population->at(fronts.at(individual)).summation_fitness_value += p_ind_population->at(fronts.at(individual)).normalized_fitness_values.at(fit);
-                }
+            // Update best alternative
+            if (best_value > p_ind_population->at(individual).performance_score) {
+                best_value = p_ind_population->at(individual).performance_score;
+                best_index = individual;
             }
-            if (p_ind_population->at(fronts.at(0)).summation_fitness_value < p_ind_population->at(fronts.at(1)).summation_fitness_value) {
-                best_index = 0;
-            }else{
-                best_index = 1;
-            }
-            
         }
-        
-    }else{
-        best_index = fronts.at(0);
+    }
+    
+    if (best_index != -1) {
+        p_ind_population->at(best_index).hall_of_fame = true;
+        cout << "Best Index: " << best_index << ", Hall of Fame: True" << endl;
+    } else {
+        cout << "No best index found." << endl;
     }
     
     p_ind_population->at(best_index).hall_of_fame = true;
@@ -236,7 +157,6 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
         }
         temp_distance = sqrt(temp_distance);
         p_ind_population->at(fronts.at(individual)).distance_to_hall_of_fame = temp_distance;
-        
     }
     
     //Sort them from low to high
@@ -267,33 +187,12 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
         }
     }
     
-//    for (int temp_fit = 0 ; temp_fit < temp_distance.size(); temp_fit++) {
-//        for (int individual = 0; individual< fronts.size() ; individual++) {
-//            if ((temp_distance.at(temp_fit) == p_ind_population->at(fronts.at(individual)).distance_to_hall_of_fame) && (!p_ind_population->at(fronts.at(individual)).good_for_next_generation)){
-//                p_ind_population->at(fronts.at(individual)).good_for_next_generation = true;
-//                break;
-//            }
-//        }
-//    }
-//
-//    for (int individual = 0 ; individual < fronts.size(); individual++) {
-//        if (!p_ind_population->at(fronts.at(individual)).good_for_next_generation) {
-//            p_ind_population->at(fronts.at(individual)).remove_me = true;
-//        }
-//    }
-    
-    
-    
-    
-    
     for (int individual = 0; individual < p_ind_population->size(); individual++) {
         if (p_ind_population->at(individual).remove_me) {
             p_ind_population->erase(p_ind_population->begin()+individual);
             individual = -1;
         }
     }
-    //cout<<teams->at(team_number).teamRover.at(rover).new_network.size()<<endl;
-    //cout<<p_ind_population->size()<<endl;
     assert(p_ind_population->size() == (number_of_individuals/2));
-        
+    
 }

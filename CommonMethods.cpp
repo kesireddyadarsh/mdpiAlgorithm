@@ -47,26 +47,30 @@ double binaryStringToReal(const std::string& binaryString) {
 
 void cal_normalized_fitness_values(vector<individual_element>* p_ind_population, int number_of_objectives){
     for (int objectives = 0; objectives < number_of_objectives; objectives++) {
-        double highest_value = -9999999.999;
-        double lowest_value = 99999999.999;
-        for (int individual = 0 ; individual < p_ind_population->size(); individual++) {
-            if (highest_value < p_ind_population->at(individual).fitnes_value.at(objectives)) {
-                highest_value = p_ind_population->at(individual).fitnes_value.at(objectives);
-            }
-            if (lowest_value > p_ind_population->at(individual).fitnes_value.at(objectives)) {
-                lowest_value = p_ind_population->at(individual).fitnes_value.at(objectives);
-            }
-        }
+        double highest_value = numeric_limits<double>::lowest(); // Correct initialization
+        double lowest_value = numeric_limits<double>::max(); // Correct initialization
         
-        if (lowest_value == highest_value) {
-            cout<<"Both are same"<<endl;
-        }
-        
+        // Finding the highest and lowest fitness values for each objective
         for (int individual = 0; individual < p_ind_population->size(); individual++) {
-            p_ind_population->at(individual).overall_normalized_fitness_values.push_back((p_ind_population->at(individual).fitnes_value.at(objectives) - lowest_value)/(lowest_value+highest_value));
+            double current_value = p_ind_population->at(individual).fitness_value.at(objectives);
+            highest_value = max(highest_value, current_value);
+            lowest_value = min(lowest_value, current_value);
+        }
+        
+        // Handle case where all values are the same
+        if (lowest_value == highest_value) {
+            for (int individual = 0; individual < p_ind_population->size(); individual++) {
+                p_ind_population->at(individual).overall_normalized_fitness_values.push_back(0.5); // Neutral value
+            }
+            continue; // Move to the next objective
+        }
+        
+        // Normalizing the fitness values for each objective
+        for (int individual = 0; individual < p_ind_population->size(); individual++) {
+            double normalized_value = (p_ind_population->at(individual).fitness_value.at(objectives) - lowest_value) / (highest_value - lowest_value);
+            p_ind_population->at(individual).overall_normalized_fitness_values.push_back(normalized_value);
         }
     }
-    
     
 }
 
@@ -126,10 +130,10 @@ void mutate(vector<individual_element>* p_ind_population,int individual,bool neg
 bool compare_two_index(vector<individual_element>* p_ind_population,int first_individual ,int second_individual){
     
     bool strictlyBetterInOneObjective = false;
-    for (size_t objective = 0; objective < p_ind_population->at(first_individual).fitnes_value.size(); objective++) {
-        if (p_ind_population->at(first_individual).fitnes_value.at(objective) < p_ind_population->at(second_individual).fitnes_value.at(objective)) {
+    for (size_t objective = 0; objective < p_ind_population->at(first_individual).fitness_value.size(); objective++) {
+        if (p_ind_population->at(first_individual).fitness_value.at(objective) < p_ind_population->at(second_individual).fitness_value.at(objective)) {
             strictlyBetterInOneObjective = true;
-        }else if(p_ind_population->at(first_individual).fitnes_value.at(objective) > p_ind_population->at(second_individual).fitnes_value.at(objective)){
+        }else if(p_ind_population->at(first_individual).fitness_value.at(objective) > p_ind_population->at(second_individual).fitness_value.at(objective)){
             return false;
         }
     }

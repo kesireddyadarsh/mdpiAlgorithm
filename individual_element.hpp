@@ -21,7 +21,7 @@ public:
     bool negative_values_accepted;
     int number_i;
     vector<string> all_x_binary;
-    vector<double> fitnes_value;
+    vector<double> fitness_value;
     vector<double> normalized_fitness_values;  //This is used for topsis
     vector<double> normalized_fitness_values_entropy; // This is used for entropy
     vector<double> overall_normalized_fitness_values; // This is used for overall

@@ -33,12 +33,12 @@ void mpf(vector<individual_element>* p_ind_population,int number_of_objectives ,
         //First summation of each objective
         double summation_of_fitness = 0.0;
         for (int individual = 0 ; individual < fronts.size(); individual++) {
-            summation_of_fitness += p_ind_population->at(fronts.at(individual)).fitnes_value.at(objective);
+            summation_of_fitness += p_ind_population->at(fronts.at(individual)).fitness_value.at(objective);
         }
         
         //Normalization of the fitness values
         for (int individual = 0 ; individual < fronts.size(); individual++) {
-            p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.push_back(p_ind_population->at(fronts.at(individual)).fitnes_value.at(objective)/summation_of_fitness);
+            p_ind_population->at(fronts.at(individual)).normalized_fitness_values_entropy.push_back(p_ind_population->at(fronts.at(individual)).fitness_value.at(objective)/summation_of_fitness);
         }
     }
     
@@ -89,7 +89,7 @@ void mpf(vector<individual_element>* p_ind_population,int number_of_objectives ,
         for (int objective = 0; objective < number_of_objectives; objective++) {
             double summation_objective = 0.0;
             for (int individual = 0 ; individual < fronts.size(); individual++) {
-                summation_objective += (p_ind_population->at(fronts.at(individual)).fitnes_value.at(objective)); //*p_ind_population->at(fronts.at(0).at(individual)).fitnes_value.at(objective));
+                summation_objective += (p_ind_population->at(fronts.at(individual)).fitness_value.at(objective)); //*p_ind_population->at(fronts.at(0).at(individual)).fitness_value.at(objective));
                 p_ind_population->at(fronts.at(individual)).euclidean_best = 9999999.99999;
                 p_ind_population->at(fronts.at(individual)).eculidean_worst = -9999999.99999;
             }
@@ -101,9 +101,9 @@ void mpf(vector<individual_element>* p_ind_population,int number_of_objectives ,
                 }
                 //cout<<summation_objective<<endl;
                 if (summation_objective < 0) {
-                    p_ind_population->at(fronts.at(individual)).normalized_fitness_values.push_back( (degree_of_diversification.at(objective) * (p_ind_population->at(fronts.at(individual)).fitnes_value.at(objective)) / sqrt(-summation_objective)));
+                    p_ind_population->at(fronts.at(individual)).normalized_fitness_values.push_back( (degree_of_diversification.at(objective) * (p_ind_population->at(fronts.at(individual)).fitness_value.at(objective)) / sqrt(-summation_objective)));
                 }else{
-                    p_ind_population->at(fronts.at(individual)).normalized_fitness_values.push_back( (degree_of_diversification.at(objective) * (p_ind_population->at(fronts.at(individual)).fitnes_value.at(objective)) / sqrt(summation_objective)));
+                    p_ind_population->at(fronts.at(individual)).normalized_fitness_values.push_back( (degree_of_diversification.at(objective) * (p_ind_population->at(fronts.at(individual)).fitness_value.at(objective)) / sqrt(summation_objective)));
                 }
             }
             

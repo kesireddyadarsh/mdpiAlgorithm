@@ -28,9 +28,9 @@ double calculatePerpendicularDistance(const individual_element& individual, cons
     
     double distance = 0.0;
     
-    // Assuming individual.fitnes_value and rp.position are normalized and have the same dimensions
-    for (size_t i = 0; i < individual.fitnes_value.size(); ++i) {
-        distance += pow(individual.fitnes_value[i] - rp.position[i], 2);
+    // Assuming individual.fitness_value and rp.position are normalized and have the same dimensions
+    for (size_t i = 0; i < individual.fitness_value.size(); ++i) {
+        distance += pow(individual.fitness_value[i] - rp.position[i], 2);
     }
     
     return sqrt(distance);

@@ -15,8 +15,8 @@ void simple_ea(vector<individual_element>* p_ind_population){
     
     for (int individual = 0 ; individual < p_ind_population->size(); individual++) {
         p_ind_population->at(individual).summation_fitness_value = 0.0;
-        for (int fit_loop = 0 ; fit_loop < p_ind_population->at(individual).fitnes_value.size(); fit_loop++) {
-            p_ind_population->at(individual).summation_fitness_value += p_ind_population->at(individual).fitnes_value.at(fit_loop);
+        for (int fit_loop = 0 ; fit_loop < p_ind_population->at(individual).fitness_value.size(); fit_loop++) {
+            p_ind_population->at(individual).summation_fitness_value += p_ind_population->at(individual).fitness_value.at(fit_loop);
         }
     }
     

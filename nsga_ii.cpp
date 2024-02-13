@@ -39,7 +39,7 @@ void nsga_ii(vector<individual_element>* p_ind_population, int number_of_objecti
     for (int objective = 0; objective < number_of_objectives; ++objective) {
         // Sort individuals in the front based on the current objective
         sort(fronts.begin(), fronts.end(), [&](const int& a, const int& b) {
-            return p_ind_population->at(a).fitnes_value[objective] < p_ind_population->at(b).fitnes_value[objective];
+            return p_ind_population->at(a).fitness_value[objective] < p_ind_population->at(b).fitness_value[objective];
         });
         
         // Assign infinite crowding distance to boundary individuals
@@ -48,8 +48,8 @@ void nsga_ii(vector<individual_element>* p_ind_population, int number_of_objecti
         
         // Calculate crowding distance for each individual (except boundaries)
         for (size_t i = 1; i < fronts.size() - 1; ++i) {
-            double prev_fitness = p_ind_population->at(fronts[i - 1]).fitnes_value[objective];
-            double next_fitness = p_ind_population->at(fronts[i + 1]).fitnes_value[objective];
+            double prev_fitness = p_ind_population->at(fronts[i - 1]).fitness_value[objective];
+            double next_fitness = p_ind_population->at(fronts[i + 1]).fitness_value[objective];
             double distance = p_ind_population->at(fronts[i]).crowding_distance;
             distance += next_fitness - prev_fitness;
             p_ind_population->at(fronts[i]).crowding_distance = distance;
