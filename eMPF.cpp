@@ -7,6 +7,60 @@
 
 #include "eMPF.hpp"
 
+vector<double> find_degree_of_diversification(vector<individual_element>* p_ind_population, vector<int> fronts, int number_of_objectives){
+    vector<double> degree_of_diversification_internal;
+    double constant_h = (fronts.size() == 1) ? 1.0 : 1.0 / log(fronts.size());
+    vector<double> entropy_objectives(number_of_objectives, 0.0);
+    
+    // Assuming Individual structure and fitness_value are defined correctly
+    for (int objective = 0; objective < number_of_objectives; objective++) {
+        double min_fitness = numeric_limits<double>::max();
+        double sum_positive_shifted_fitness = 0.0;
+        
+        // Find minimum fitness value for the objective to shift all values to positive
+        for (int individual : fronts) {
+            double fitness = p_ind_population->at(individual).fitness_value[objective];
+            min_fitness = min(min_fitness, fitness);
+        }
+        double shift_value = (min_fitness < 0) ? abs(min_fitness) + 1 : 0;
+        
+        // Calculate shifted sum for normalization
+        for (int individual : fronts) {
+            double shifted_fitness = p_ind_population->at(individual).fitness_value[objective] + shift_value;
+            sum_positive_shifted_fitness += shifted_fitness;
+        }
+        
+        // Calculate normalized values and entropy for each objective
+        vector<double> normalized_fitness(fronts.size(), 0.0);
+        for (int i = 0; i < fronts.size(); i++) {
+            int individual = fronts[i];
+            normalized_fitness[i] = (p_ind_population->at(individual).fitness_value[objective] + shift_value) / sum_positive_shifted_fitness;
+            
+            // Avoid log(0) by ensuring there's a minimal positive value
+            if (normalized_fitness[i] > 0) {
+                entropy_objectives[objective] -= normalized_fitness[i] * log(normalized_fitness[i]);
+            }
+        }
+        entropy_objectives[objective] *= constant_h;
+    }
+    
+    // Calculate degree of diversification
+    double sum_of_diversification = 0.0;
+    for (int objective = 0; objective < number_of_objectives; objective++) {
+        degree_of_diversification_internal.push_back(entropy_objectives[objective] - 1);
+        sum_of_diversification += degree_of_diversification_internal[objective];
+    }
+    for (int objective = 0; objective < number_of_objectives; objective++) {
+        degree_of_diversification_internal[objective] /= sum_of_diversification;
+    }
+    
+    // Your validation or further processing
+    assert(entropy_objectives.size() == number_of_objectives);
+    assert(degree_of_diversification_internal.size() == number_of_objectives);
+    
+    return degree_of_diversification_internal;
+}
+
 
 void empf(vector<individual_element>* p_ind_population,int number_of_objectives , int generation_number, bool negative_value_accepted, vector<vector<int>> work_on_this){
     
@@ -20,70 +74,35 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
             fronts.push_back(individual);
         }
     }
-    vector<double> degree_of_diversification;
+    std::vector<int> min_fitness_indexes(number_of_objectives, -1); // Initialize with invalid index
     
-    if (constant_weight) {
-        double equal_weight = 1.0/number_of_objectives;
-        for (int objective = 0 ; objective < number_of_objectives; objective++) {
-            degree_of_diversification.push_back(equal_weight);
-        }
-    }else{
+    // Iterate over objectives
+    for (int objective = 0; objective < number_of_objectives; ++objective) {
+        // Initialize minimum fitness to maximum possible value
+        double min_fitness = std::numeric_limits<double>::max();
         
-        double constant_h = (fronts.size() == 1) ? 1.0 : 1.0 / log(fronts.size());
-        vector<double> entropy_objectives(number_of_objectives, 0.0);
-        
-        // Assuming Individual structure and fitness_value are defined correctly
-        for (int objective = 0; objective < number_of_objectives; objective++) {
-            double min_fitness = numeric_limits<double>::max();
-            double sum_positive_shifted_fitness = 0.0;
-            
-            // Find minimum fitness value for the objective to shift all values to positive
-            for (int individual : fronts) {
-                double fitness = p_ind_population->at(individual).fitness_value[objective];
-                min_fitness = min(min_fitness, fitness);
+        // Iterate over individuals in fronts
+        for (int index : fronts) {
+            // Update minimum fitness if necessary
+            if (p_ind_population->at(index).fitness_value[objective] < min_fitness) {
+                min_fitness = p_ind_population->at(index).fitness_value[objective];
+                min_fitness_indexes[objective] = index;
             }
-            double shift_value = (min_fitness < 0) ? abs(min_fitness) + 1 : 0;
-            
-            // Calculate shifted sum for normalization
-            for (int individual : fronts) {
-                double shifted_fitness = p_ind_population->at(individual).fitness_value[objective] + shift_value;
-                sum_positive_shifted_fitness += shifted_fitness;
-            }
-            
-            // Calculate normalized values and entropy for each objective
-            vector<double> normalized_fitness(fronts.size(), 0.0);
-            for (int i = 0; i < fronts.size(); i++) {
-                int individual = fronts[i];
-                normalized_fitness[i] = (p_ind_population->at(individual).fitness_value[objective] + shift_value) / sum_positive_shifted_fitness;
-                
-                // Avoid log(0) by ensuring there's a minimal positive value
-                if (normalized_fitness[i] > 0) {
-                    entropy_objectives[objective] -= normalized_fitness[i] * log(normalized_fitness[i]);
-                }
-            }
-            entropy_objectives[objective] *= constant_h;
         }
-        
-        // Calculate degree of diversification
-        double sum_of_diversification = 0.0;
-        for (int objective = 0; objective < number_of_objectives; objective++) {
-            degree_of_diversification[objective] = entropy_objectives[objective] - 1;
-            sum_of_diversification += degree_of_diversification[objective];
-        }
-        for (int objective = 0; objective < number_of_objectives; objective++) {
-            degree_of_diversification[objective] /= sum_of_diversification;
-        }
-        
-        // Your validation or further processing
-        assert(entropy_objectives.size() == number_of_objectives);
-        assert(degree_of_diversification.size() == number_of_objectives);
-        
     }
+    
+    // Remove the indexes stored in min_fitness_indexes from fronts
+    for (int index : min_fitness_indexes) {
+        fronts.erase(std::remove(fronts.begin(), fronts.end(), index), fronts.end());
+    }
+    
+    vector<double> degree_of_diversification = find_degree_of_diversification(p_ind_population, fronts, number_of_objectives);
+    
     
     int best_index = -1;
     double best_value = std::numeric_limits<double>::max();
     
-    if (fronts.size() >= 2) {
+    if (fronts.size() > 2) {
         vector<double> ideal_best(number_of_objectives, std::numeric_limits<double>::lowest());
         vector<double> ideal_worst(number_of_objectives, std::numeric_limits<double>::max());
         
@@ -120,6 +139,8 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
             }
         }
     }
+    
+    
     
     if (best_index != -1) {
         p_ind_population->at(best_index).hall_of_fame = true;
@@ -160,13 +181,7 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
     }
     
     //Sort them from low to high
-    // cout<<required_number<<endl;
-    //cout<<fronts.at(front_number_to_select).size()+required_number<<endl;
-    
     int temp_required_values = (-work_on_this.at(0).at(1));
-    
-    //cout<<"This is for the break"<<endl;
-    
     
     vector<double> temp_distance;
     for (int temp = 0 ; temp < fronts.size(); temp++) {
@@ -179,6 +194,8 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
         temp_distance.pop_back();
     }
     
+    
+    
     for (int individual = 0; individual < temp_required_values; individual++) {
         for (int i = 0; i < fronts.size(); i++) {
             if (p_ind_population->at(fronts.at(i)).distance_to_hall_of_fame == temp_distance.at(individual)) {
@@ -187,12 +204,7 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
         }
     }
     
-    for (int individual = 0; individual < p_ind_population->size(); individual++) {
-        if (p_ind_population->at(individual).remove_me) {
-            p_ind_population->erase(p_ind_population->begin()+individual);
-            individual = -1;
-        }
-    }
-    assert(p_ind_population->size() == (number_of_individuals/2));
+    
+    select_remove_individuals(p_ind_population, work_on_this.at(0).at(2));
     
 }

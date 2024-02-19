@@ -205,12 +205,7 @@ void mpf(vector<individual_element>* p_ind_population,int number_of_objectives ,
     //cout<<"This is the front number \t"<<front_number_to_select<<endl;
     //cout<<"This is the required number \t"<<required_number<<endl;
     
-    //Fronts to remove
-    for (int individual =0; individual < p_ind_population->size(); individual++) {
-        if (p_ind_population->at(individual).front_number > front_number_to_select) {
-            p_ind_population->at(individual).remove_me = true;
-        }
-    }
+    
     
     fronts.clear();
     for (int individual = 0; individual < work_on_this.at(1).size(); individual++) {
@@ -257,33 +252,6 @@ void mpf(vector<individual_element>* p_ind_population,int number_of_objectives ,
         }
     }
     
-//    for (int temp_fit = 0 ; temp_fit < temp_distance.size(); temp_fit++) {
-//        for (int individual = 0; individual< fronts.size() ; individual++) {
-//            if ((temp_distance.at(temp_fit) == p_ind_population->at(fronts.at(individual)).distance_to_hall_of_fame) && (!p_ind_population->at(fronts.at(individual)).good_for_next_generation)){
-//                p_ind_population->at(fronts.at(individual)).good_for_next_generation = true;
-//                break;
-//            }
-//        }
-//    }
-//    
-//    for (int individual = 0 ; individual < fronts.size(); individual++) {
-//        if (!p_ind_population->at(fronts.at(individual)).good_for_next_generation) {
-//            p_ind_population->at(fronts.at(individual)).remove_me = true;
-//        }
-//    }
-    
-    
-    
-    
-    
-    for (int individual = 0; individual < p_ind_population->size(); individual++) {
-        if (p_ind_population->at(individual).remove_me) {
-            p_ind_population->erase(p_ind_population->begin()+individual);
-            individual = -1;
-        }
-    }
-    //cout<<teams->at(team_number).teamRover.at(rover).new_network.size()<<endl;
-    //cout<<p_ind_population->size()<<endl;
-    assert(p_ind_population->size() == (number_of_individuals/2));
+    select_remove_individuals(p_ind_population, work_on_this.at(0).at(2));
         
 }

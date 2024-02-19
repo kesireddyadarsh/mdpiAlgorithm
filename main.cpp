@@ -33,8 +33,8 @@ int main(int argc, const char * argv[]) {
     srand(seed);
     
     population pop;
-    int number_of_population = 30;
-    int case_number = 2;//This is objective number
+    int number_of_population = 300;
+    int case_number = 0;//This is objective number
     int number_of_objectives = 2;
     
     for (int generation = 0 ; generation < 100; generation++) {
@@ -60,7 +60,7 @@ int main(int argc, const char * argv[]) {
                 pop.ind_population.at(individual).normalized_fitness_values.clear();
                 pop.ind_population.at(individual).overall_normalized_fitness_values.clear();
                 pop.ind_population.at(individual).crowding_distance = 0.0;
-                
+                pop.ind_population.at(individual).hall_of_fame = false;
                 exe_function( pop.p_ind_population, individual, case_number);
                 
             }
@@ -69,6 +69,7 @@ int main(int argc, const char * argv[]) {
         printValues(pop, generation);
         cal_normalized_fitness_values(pop.p_ind_population, number_of_objectives);
         vector<vector<int>> hold_values_for_algorithm = assign_front_number(pop.p_ind_population);
+        
         
         if (hold_values_for_algorithm.at(0).at(0) == 0) {
             for (int individual = 0 ; individual < pop.ind_population.size(); individual++) {
@@ -112,7 +113,26 @@ int main(int argc, const char * argv[]) {
                     
                 case 4:
                 {
-                    empf(pop.p_ind_population, number_of_objectives, generation, negative_value_accepted, hold_values_for_algorithm);
+                    if (hold_values_for_algorithm.at(1).size() <= 3) {
+                        for (int individual = 0 ; individual< -hold_values_for_algorithm.at(0).at(1); individual++) {
+                            int random_number = rand()%hold_values_for_algorithm.at(1).size();
+                            pop.ind_population.at(random_number).remove_me = true;
+                        }
+                        for (int individual = 0 ; individual < pop.ind_population.size(); individual++) {
+                            if (pop.ind_population.at(individual).front_number > hold_values_for_algorithm.at(0).at(2)) {
+                                pop.ind_population.at(individual).remove_me = true;
+                            }
+                        }
+                        
+                        for (int individual = 0 ; individual < pop.ind_population.size(); individual++) {
+                            if (pop.ind_population.at(individual).remove_me) {
+                                pop.ind_population.erase(pop.ind_population.begin() + individual);
+                                individual = -1;
+                            }
+                        }
+                    }else{
+                        empf(pop.p_ind_population, number_of_objectives, generation, negative_value_accepted, hold_values_for_algorithm);
+                    }
                     break;
                 }
                     
@@ -144,10 +164,6 @@ int main(int argc, const char * argv[]) {
                 }
             }
         }
-        
-        
-        
-        
         
         
         assert(pop.ind_population.size() == (number_of_population));

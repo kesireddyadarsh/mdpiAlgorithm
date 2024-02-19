@@ -115,21 +115,7 @@ void nsga_iii(vector<individual_element>* p_ind_population,int number_of_objecti
     int num_to_remove = -work_on_this.at(0).at(1); // Number of individuals to mark for removal
     markForRemovalUsingNiching(p_ind_population, fronts, front_number_to_select, num_to_remove);
     
-    for (int individual  = 0; individual < p_ind_population->size(); individual++) {
-        if (p_ind_population->at(individual).front_number > work_on_this.at(0).at(2)) {
-            p_ind_population->at(individual).remove_me = true;
-        }
-    }
-    
-    // Remove marked individuals in reverse order to avoid indexing issues
-    for (int individual = p_ind_population->size() - 1; individual >= 0; --individual) {
-        if (p_ind_population->at(individual).remove_me) {
-            p_ind_population->erase(p_ind_population->begin() + individual);
-        }
-    }
-    
-    // Assert to ensure the expected number of individuals are removed
-    assert(p_ind_population->size() == (number_of_individuals/2));
+    select_remove_individuals(p_ind_population,  work_on_this.at(0).at(2));
 
     
 }

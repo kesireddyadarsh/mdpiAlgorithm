@@ -270,5 +270,22 @@ vector<vector<int>> assign_front_number(vector<individual_element>* p_ind_popula
     
 }
 
-
+void select_remove_individuals(vector<individual_element>* p_ind_population, int front_number){
+    
+    int number_of_individuals = p_ind_population->size();
+    
+    for (int individual = 0 ; individual < p_ind_population->size(); individual++) {
+        if (p_ind_population->at(individual).front_number > front_number) {
+            p_ind_population->at(individual).remove_me = true;
+        }
+    }
+    
+    for (int individual = 0; individual < p_ind_population->size(); individual++) {
+        if (p_ind_population->at(individual).remove_me) {
+            p_ind_population->erase(p_ind_population->begin()+individual);
+            individual = -1;
+        }
+    }
+    assert(p_ind_population->size() == (number_of_individuals/2));
+}
 

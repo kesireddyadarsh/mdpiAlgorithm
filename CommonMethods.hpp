@@ -29,5 +29,6 @@ void mutate(vector<individual_element>* p_ind_population,int individual,bool neg
 bool compare_two_index(vector<individual_element>* p_ind_population,int individual ,int other_individual);
 vector<double> generateUniqueRandomNumbers(double mean, double std_dev, int count);
 vector<vector<int>> assign_front_number(vector<individual_element>* p_ind_population);
+void select_remove_individuals(vector<individual_element>* p_ind_population, int front_number);
 
 #endif /* CommonMethods_hpp */
