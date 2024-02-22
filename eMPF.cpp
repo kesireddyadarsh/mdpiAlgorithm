@@ -8,6 +8,7 @@
 #include "eMPF.hpp"
 
 vector<double> find_degree_of_diversification(vector<individual_element>* p_ind_population, vector<int> fronts, int number_of_objectives){
+    
     vector<double> degree_of_diversification_internal;
     double constant_h = (fronts.size() == 1) ? 1.0 : 1.0 / log(fronts.size());
     vector<double> entropy_objectives(number_of_objectives, 0.0);
@@ -64,10 +65,23 @@ vector<double> find_degree_of_diversification(vector<individual_element>* p_ind_
 
 void empf(vector<individual_element>* p_ind_population,int number_of_objectives , int generation_number, bool negative_value_accepted, vector<vector<int>> work_on_this){
     
-    bool constant_weight = true;
+    //This is for debugging frontnumbers
+    vector<vector<int>> debug_fronts;
+    vector<int> temp_fronts;
+    for (int value = 0; value < 100; value++) {
+        for (int individual = 0; individual < p_ind_population->size(); individual++) {
+            if (p_ind_population->at(individual).front_number == value) {
+                temp_fronts.push_back(p_ind_population->at(individual).front_number);
+            }
+        }
+        debug_fronts.push_back(temp_fronts);
+    }
+    
     int number_of_individuals = p_ind_population->size();
     int front_number_to_select = work_on_this.at(0).at(2);
     int mpf_front = work_on_this.at(0).at(2);
+    int number_to_remove = -work_on_this.at(0).at(1); //remove to next generation
+    int value_holder = work_on_this.at(1).size() - number_to_remove; //number to next generation
     vector<int> fronts;
     for (int individual = 0; individual < p_ind_population->size(); individual++) {
         if (p_ind_population->at(individual).front_number == mpf_front) {
@@ -78,18 +92,18 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
     
     // Iterate over objectives
     for (int objective = 0; objective < number_of_objectives; ++objective) {
-        // Initialize minimum fitness to maximum possible value
-        double min_fitness = std::numeric_limits<double>::max();
         
-        // Iterate over individuals in fronts
+        double min_fitness = std::numeric_limits<double>::max();
         for (int index : fronts) {
-            // Update minimum fitness if necessary
             if (p_ind_population->at(index).fitness_value[objective] < min_fitness) {
                 min_fitness = p_ind_population->at(index).fitness_value[objective];
                 min_fitness_indexes[objective] = index;
             }
         }
     }
+    std::sort(min_fitness_indexes.begin(), min_fitness_indexes.end());
+    auto last = std::unique(min_fitness_indexes.begin(), min_fitness_indexes.end());
+    min_fitness_indexes.erase(last, min_fitness_indexes.end());
     
     // Remove the indexes stored in min_fitness_indexes from fronts
     for (int index : min_fitness_indexes) {
@@ -97,49 +111,50 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
     }
     
     vector<double> degree_of_diversification = find_degree_of_diversification(p_ind_population, fronts, number_of_objectives);
-    
+//    vector<double> degree_of_diversification;
+//    double we = 1.0/number_of_objectives;
+//    for (int i_t = 0; i_t < number_of_objectives; i_t++) {
+//        degree_of_diversification.push_back(we);
+//    }
     
     int best_index = -1;
     double best_value = std::numeric_limits<double>::max();
     
-    if (fronts.size() > 2) {
-        vector<double> ideal_best(number_of_objectives, std::numeric_limits<double>::lowest());
-        vector<double> ideal_worst(number_of_objectives, std::numeric_limits<double>::max());
-        
-        // Calculate normalized values based on degree_of_diversification and fitness values
-        for (int individual : fronts) {
-            for (int objective = 0; objective < number_of_objectives; objective++) {
-                double normalized_value = degree_of_diversification[objective] * p_ind_population->at(individual).fitness_value[objective];
-                p_ind_population->at(individual).normalized_fitness_values.push_back(normalized_value);
-                
-                // Update ideal best and worst
-                ideal_best[objective] = max(ideal_best[objective], normalized_value);
-                ideal_worst[objective] = min(ideal_worst[objective], normalized_value);
-            }
-        }
-        
-        // Calculate Euclidean distances and performance score
-        for (int individual : fronts) {
-            double euclidean_best = 0.0;
-            double euclidean_worst = 0.0;
-            for (int objective = 0; objective < number_of_objectives; objective++) {
-                euclidean_best += pow(p_ind_population->at(individual).normalized_fitness_values[objective] - ideal_best[objective], 2);
-                euclidean_worst += pow(p_ind_population->at(individual).normalized_fitness_values[objective] - ideal_worst[objective], 2);
-            }
-            p_ind_population->at(individual).euclidean_best = sqrt(euclidean_best);
-            p_ind_population->at(individual).eculidean_worst = sqrt(euclidean_worst);
+    vector<double> ideal_best(number_of_objectives, std::numeric_limits<double>::lowest());
+    vector<double> ideal_worst(number_of_objectives, std::numeric_limits<double>::max());
+    
+    // Calculate normalized values based on degree_of_diversification and fitness values
+    for (int individual : fronts) {
+        for (int objective = 0; objective < number_of_objectives; objective++) {
+            double normalized_value = degree_of_diversification[objective] * p_ind_population->at(individual).fitness_value[objective];
+            p_ind_population->at(individual).normalized_fitness_values.push_back(normalized_value);
             
-            // Calculate performance score
-            p_ind_population->at(individual).performance_score = p_ind_population->at(individual).eculidean_worst / (p_ind_population->at(individual).eculidean_worst + p_ind_population->at(individual).euclidean_best);
-            
-            // Update best alternative
-            if (best_value > p_ind_population->at(individual).performance_score) {
-                best_value = p_ind_population->at(individual).performance_score;
-                best_index = individual;
-            }
+            // Update ideal best and worst
+            ideal_best[objective] = max(ideal_best[objective], normalized_value);
+            ideal_worst[objective] = min(ideal_worst[objective], normalized_value);
         }
     }
     
+    // Calculate Euclidean distances and performance score
+    for (int individual : fronts) {
+        double euclidean_best = 0.0;
+        double euclidean_worst = 0.0;
+        for (int objective = 0; objective < number_of_objectives; objective++) {
+            euclidean_best += pow(p_ind_population->at(individual).normalized_fitness_values[objective] - ideal_best[objective], 2);
+            euclidean_worst += pow(p_ind_population->at(individual).normalized_fitness_values[objective] - ideal_worst[objective], 2);
+        }
+        p_ind_population->at(individual).euclidean_best = sqrt(euclidean_best);
+        p_ind_population->at(individual).eculidean_worst = sqrt(euclidean_worst);
+        
+        // Calculate performance score
+        p_ind_population->at(individual).performance_score = p_ind_population->at(individual).eculidean_worst / (p_ind_population->at(individual).eculidean_worst + p_ind_population->at(individual).euclidean_best);
+        
+        // Update best alternative
+        if (best_value > p_ind_population->at(individual).performance_score) {
+            best_value = p_ind_population->at(individual).performance_score;
+            best_index = individual;
+        }
+    }
     
     
     if (best_index != -1) {
@@ -153,22 +168,6 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
     int index_of_hall_fame_number = best_index;
     
     
-    //We have to apply HOF front_number_to_select
-    //cout<<"This is the front number \t"<<front_number_to_select<<endl;
-    //cout<<"This is the required number \t"<<required_number<<endl;
-    
-    //Fronts to remove
-    for (int individual =0; individual < p_ind_population->size(); individual++) {
-        if (p_ind_population->at(individual).front_number > front_number_to_select) {
-            p_ind_population->at(individual).remove_me = true;
-        }
-    }
-    
-    fronts.clear();
-    for (int individual = 0; individual < work_on_this.at(1).size(); individual++) {
-        fronts.push_back(work_on_this.at(1).at(individual));
-    }
-    
     //Calculate the distance to HOF point to individual
     for (int individual = 0 ; individual < fronts.size(); individual++) {
         double temp_distance = 0.0;
@@ -180,30 +179,22 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
         p_ind_population->at(fronts.at(individual)).distance_to_hall_of_fame = temp_distance;
     }
     
-    //Sort them from low to high
-    int temp_required_values = (-work_on_this.at(0).at(1));
-    
-    vector<double> temp_distance;
-    for (int temp = 0 ; temp < fronts.size(); temp++) {
-        temp_distance.push_back(p_ind_population->at(fronts.at(temp)).distance_to_hall_of_fame);
+    for (int temp = 0; temp < min_fitness_indexes.size(); temp++) {
+        fronts.push_back(min_fitness_indexes.at(temp));
+        p_ind_population->at(min_fitness_indexes.at(temp)).distance_to_hall_of_fame = 0.0;
     }
     
-    sort(temp_distance.begin(), temp_distance.end(),greater<double>());
+    std::sort(fronts.begin(), fronts.end(), [&](const int& a, const int& b) {
+        return p_ind_population->at(a).distance_to_hall_of_fame < p_ind_population->at(b).distance_to_hall_of_fame;
+    });
     
-    if (temp_distance.at(temp_distance.size()-1)) {
-        temp_distance.pop_back();
+    //First set everthing to remove.
+    int loopcounter = fronts.size()-1;
+    while (number_to_remove > 0) {
+        p_ind_population->at(fronts.at(loopcounter)).remove_me = true;
+        number_to_remove--;
+        loopcounter--;
     }
-    
-    
-    
-    for (int individual = 0; individual < temp_required_values; individual++) {
-        for (int i = 0; i < fronts.size(); i++) {
-            if (p_ind_population->at(fronts.at(i)).distance_to_hall_of_fame == temp_distance.at(individual)) {
-                p_ind_population->at(fronts.at(i)).remove_me = true;
-            }
-        }
-    }
-    
     
     select_remove_individuals(p_ind_population, work_on_this.at(0).at(2));
     

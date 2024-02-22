@@ -98,7 +98,7 @@ void mutate(vector<individual_element>* p_ind_population,int individual,bool neg
     
     if (representation_flag) {
         double mean = 0.0;
-        double mutation_rate = 0.25;
+        double mutation_rate = 0.5;
         vector<double> randomNumbersMutation;
         randomNumbersMutation = generateUniqueRandomNumbers(mean, mutation_rate, p_ind_population->at(individual).all_x.size());
         for (int mutationNumber = 0 ; mutationNumber < p_ind_population->at(individual).all_x.size(); mutationNumber++) {

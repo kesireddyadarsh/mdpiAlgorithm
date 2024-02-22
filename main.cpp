@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <unistd.h>
+#include <set>
 
 #include "individual_element.hpp"
 #include "population.hpp"
@@ -34,10 +35,10 @@ int main(int argc, const char * argv[]) {
     
     population pop;
     int number_of_population = 300;
-    int case_number = 0;//This is objective number
+    int case_number = 2;//This is objective number
     int number_of_objectives = 2;
     
-    for (int generation = 0 ; generation < 100; generation++) {
+    for (int generation = 0 ; generation < 1000; generation++) {
         if (generation == 0 ) {
             for (int individual = 0; individual < number_of_population; individual++) {
                 individual_element element;
@@ -60,6 +61,7 @@ int main(int argc, const char * argv[]) {
                 pop.ind_population.at(individual).normalized_fitness_values.clear();
                 pop.ind_population.at(individual).overall_normalized_fitness_values.clear();
                 pop.ind_population.at(individual).crowding_distance = 0.0;
+                pop.ind_population.at(individual).distance_to_hall_of_fame = std::numeric_limits<double>::max();
                 pop.ind_population.at(individual).hall_of_fame = false;
                 exe_function( pop.p_ind_population, individual, case_number);
                 
@@ -114,9 +116,14 @@ int main(int argc, const char * argv[]) {
                 case 4:
                 {
                     if (hold_values_for_algorithm.at(1).size() <= 3) {
+                        set<int> used_numbers;
                         for (int individual = 0 ; individual< -hold_values_for_algorithm.at(0).at(1); individual++) {
                             int random_number = rand()%hold_values_for_algorithm.at(1).size();
-                            pop.ind_population.at(random_number).remove_me = true;
+                            while (used_numbers.find(random_number) != used_numbers.end()) { // Check if the number is already used
+                                    random_number = rand() % hold_values_for_algorithm.at(1).size(); // Generate a new number if the previous one was used
+                                }
+                                used_numbers.insert(random_number);
+                            pop.ind_population.at(hold_values_for_algorithm.at(1).at(random_number)).remove_me = true;
                         }
                         for (int individual = 0 ; individual < pop.ind_population.size(); individual++) {
                             if (pop.ind_population.at(individual).front_number > hold_values_for_algorithm.at(0).at(2)) {

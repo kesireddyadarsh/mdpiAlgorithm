@@ -11,6 +11,7 @@ void printValues(population pop,int generation){
     try {
         ofstream reward_file;
         char buf_2[0x100];
+//          snprintf(buf_2, sizeof(buf_2), "/Users/adarshkesireddy/Downloads/Simulation_1/Case_0/0/empf/rewards_%d.txt", generation);
           snprintf(buf_2, sizeof(buf_2), "/Users/adarshkesireddy/Downloads/sample_simulation/rewards_%d.txt", generation);
 //          snprintf(buf_2, sizeof(buf_2), "/home/akesireddy/Downloads/sample_simulation/rewards_%d.txt", generation);
 //       snprintf(buf_2, sizeof(buf_2), "C:\\Users\\akesireddy\\Downloads\\Data_points\\rewards_%d.txt", generation);
@@ -36,6 +37,7 @@ void printValues(population pop,int generation){
     try {
         ofstream numbers_file;
         char buf[0x100];
+//          snprintf(buf, sizeof(buf), "/Users/adarshkesireddy/Downloads/Data/Case_14/nsgaii/numbers_%d.txt", generation);
           snprintf(buf, sizeof(buf), "/Users/adarshkesireddy/Downloads/sample_simulation/numbers_%d.txt", generation);
 //       snprintf(buf, sizeof(buf), "C:\\Users\\akesireddy\\Downloads\\Data_points\\numbers_%d.txt", generation);
         numbers_file.open(buf);

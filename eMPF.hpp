@@ -15,6 +15,7 @@
 #include <assert.h>
 #include <algorithm>
 #include <map>
+#include <set>
 
 #include "population.hpp"
 #include "CommonMethods.hpp"
