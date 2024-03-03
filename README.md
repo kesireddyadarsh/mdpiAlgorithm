@@ -1,5 +1,5 @@
 ## Introduction
-In this code, we are implementing elite Multi Criteria Decision Making - Pareto Front (eMPF) for solving multi-objective optimization problem. In addition, we also provide code for Multi Criteria Decision Making - Pareto Front (MPF), Non-dominated Sorting Genetic Algorithm - II (NSGA-II), and Non-dominated Sorting Genetic Algorithm - III (NSGA-III) techniques. This repository also contains, data generated using code, Python code to perform the analysis, and graphs for the data.  
+In this code, we are implementing elite Multi Criteria Decision Making - Pareto Front (eMPF) for solving multi-objective optimization problem. In addition, we also provide code for Multi Criteria Decision Making - Pareto Front (MPF), Non-dominated Sorting Genetic Algorithm - II (NSGA-II), and Non-dominated Sorting Genetic Algorithm - III (NSGA-III) techniques. This repository also contains, data generated using code, Python code to perform the analysis, and graphs for the data. In addition, issues sections covers all the issues and testing performed on the code along with timeline. 
 
 ## Test Functions
 In this code the following test functions are used. Please refer (paper) for the equations corresponding to the test function along with constraints and search domain in Appendix A. 
