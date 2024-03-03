@@ -1,8 +1,8 @@
 ## Introduction
-
+In this code, we are implementing elite Multi Criteria Decision Making - Pareto Front for solving multi-objective optimization problem. 
 
 ## Test Functions
-In this code the following test functions are used. Please refer (paper) for equations
+In this code the following test functions are used. Please refer (paper) for the equations corresponding to the test function along with constraints and search domain in Appendix A. 
 * Binh and Korn Function
 * Chancing and Haimes
 * Fonseca-Fleming
@@ -22,7 +22,7 @@ In this code the following test functions are used. Please refer (paper) for equ
 * Viennet
 
 ## Algorithms 
-Please find the code for the following algorithms. In (paper), we did nto use simple EA
+Please find the code for the following algorithms. In (paper), we do not use Simple EA provided in the code. It was used to check mutation and testing of code. In Simple EA, we were using summation of the objectives which is not optimal way to find multi-objective optimization. The results from the simulation are presented in (paper) Appendix B. 
 * Simple EA
 * NSGA - II
 * NSGA - III
