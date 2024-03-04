@@ -17,7 +17,6 @@ In this code the following test functions are used. Please refer (paper) for the
 * Zitzler-Deb-Thiele’s N4
 * Zitzler-Deb-Thiele’s N6
 * Osyczka and Kundu
-* CTP1 function
 * Const-Ex
 * Viennet
 
