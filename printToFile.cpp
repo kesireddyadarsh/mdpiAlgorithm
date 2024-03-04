@@ -7,12 +7,28 @@
 
 #include "printToFile.hpp"
 
-void printValues(population pop,int generation){
+void printValues(population pop,int simulation_run, int generation, int case_number,int case_to_study){
+    char buf[1024]; // Ensure this buffer is large enough for your path
+    const char* directory;
+
+    if (case_to_study == 4) {
+        directory = "empf";
+    } else if (case_to_study == 3) {
+        directory = "mpf";
+    } else if (case_to_study == 1) {
+        directory = "nsgaii";
+    } else {
+        directory = "nsgaiii"; // Default or any other case_number
+    }
+
+    
     try {
         ofstream reward_file;
         char buf_2[0x100];
-//          snprintf(buf_2, sizeof(buf_2), "/Users/adarshkesireddy/Downloads/Simulation_1/Case_0/0/empf/rewards_%d.txt", generation);
-          snprintf(buf_2, sizeof(buf_2), "/Users/adarshkesireddy/Downloads/sample_simulation/rewards_%d.txt", generation);
+        
+        snprintf(buf_2, sizeof(buf_2), "/Users/adarshkesireddy/Downloads/Simulation_1/Case_%d/%d/%s/rewards_%d.txt",case_number, simulation_run, directory, generation);
+//        snprintf(buf_2, sizeof(buf_2), "/Users/adarshkesireddy/Downloads/Analysis/rewards_%d.txt",generation);
+//          snprintf(buf_2, sizeof(buf_2), "/Users/adarshkesireddy/Downloads/sample_simulation/rewards_%d.txt", generation);
 //          snprintf(buf_2, sizeof(buf_2), "/home/akesireddy/Downloads/sample_simulation/rewards_%d.txt", generation);
 //       snprintf(buf_2, sizeof(buf_2), "C:\\Users\\akesireddy\\Downloads\\Data_points\\rewards_%d.txt", generation);
         reward_file.open(buf_2);
@@ -36,11 +52,12 @@ void printValues(population pop,int generation){
 
     try {
         ofstream numbers_file;
-        char buf[0x100];
-//          snprintf(buf, sizeof(buf), "/Users/adarshkesireddy/Downloads/Data/Case_14/nsgaii/numbers_%d.txt", generation);
-          snprintf(buf, sizeof(buf), "/Users/adarshkesireddy/Downloads/sample_simulation/numbers_%d.txt", generation);
+        char buf_3[0x100];
+//        snprintf(buf_3, sizeof(buf_3), "/Users/adarshkesireddy/Downloads/Analysis/numbers_%d.txt",generation);
+        snprintf(buf_3, sizeof(buf_3), "/Users/adarshkesireddy/Downloads/Simulation_1/Case_%d/%d/%s/numbers_%d.txt",case_number, simulation_run, directory, generation);
+//          snprintf(buf, sizeof(buf), "/Users/adarshkesireddy/Downloads/sample_simulation/numbers_%d.txt", generation);
 //       snprintf(buf, sizeof(buf), "C:\\Users\\akesireddy\\Downloads\\Data_points\\numbers_%d.txt", generation);
-        numbers_file.open(buf);
+        numbers_file.open(buf_3);
         numbers_file.exceptions(std::ifstream::failbit);
         for (int team_number = 0 ; team_number < pop.ind_population.size(); team_number++) {
             for(int x_value=0; x_value<(pop.ind_population.at(team_number).all_x.size()); x_value++){

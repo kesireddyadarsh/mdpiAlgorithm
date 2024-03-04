@@ -18,6 +18,6 @@
 #include "TestScenario.hpp"
 #include "CommonMethods.hpp"
 
-void printValues(population pop, int generation);
+void printValues(population pop,int simulation_run, int generation, int case_number, int case_to_study);
 
 #endif /* printToFile_hpp */

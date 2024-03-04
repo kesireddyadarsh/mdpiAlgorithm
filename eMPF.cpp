@@ -66,6 +66,7 @@ vector<double> find_degree_of_diversification(vector<individual_element>* p_ind_
 void empf(vector<individual_element>* p_ind_population,int number_of_objectives , int generation_number, bool negative_value_accepted, vector<vector<int>> work_on_this){
     
     //This is for debugging frontnumbers
+    bool debugger_flag = false;
     vector<vector<int>> debug_fronts;
     vector<int> temp_fronts;
     for (int value = 0; value < 100; value++) {
@@ -88,6 +89,15 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
             fronts.push_back(individual);
         }
     }
+    if (debugger_flag) {
+        cout<<"This are in front"<<endl;
+        for (int temp_value : fronts) {
+            cout<<temp_value<<"\t";
+        }
+        cout<<endl;
+    }
+   
+    
     std::vector<int> min_fitness_indexes(number_of_objectives, -1); // Initialize with invalid index
     
     // Iterate over objectives
@@ -110,12 +120,16 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
         fronts.erase(std::remove(fronts.begin(), fronts.end(), index), fronts.end());
     }
     
-    vector<double> degree_of_diversification = find_degree_of_diversification(p_ind_population, fronts, number_of_objectives);
-//    vector<double> degree_of_diversification;
-//    double we = 1.0/number_of_objectives;
-//    for (int i_t = 0; i_t < number_of_objectives; i_t++) {
-//        degree_of_diversification.push_back(we);
-//    }
+    if (debugger_flag) {
+        cout<<"This are min:: "<<min_fitness_indexes.at(0)<<"\t"<<min_fitness_indexes.at(1)<<endl;
+    }
+    
+//    vector<double> degree_of_diversification = find_degree_of_diversification(p_ind_population, fronts, number_of_objectives);
+    vector<double> degree_of_diversification;
+    double we = 1.0/number_of_objectives;
+    for (int i_t = 0; i_t < number_of_objectives; i_t++) {
+        degree_of_diversification.push_back(we);
+    }
     
     int best_index = -1;
     double best_value = std::numeric_limits<double>::max();
@@ -156,13 +170,15 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
         }
     }
     
-    
-    if (best_index != -1) {
-        p_ind_population->at(best_index).hall_of_fame = true;
-        cout << "Best Index: " << best_index << ", Hall of Fame: True" << endl;
-    } else {
-        cout << "No best index found." << endl;
+    if (debugger_flag) {
+        if (best_index != -1) {
+            p_ind_population->at(best_index).hall_of_fame = true;
+            cout << "Best Index: " << best_index << ", Hall of Fame: True" << endl;
+        } else {
+            cout << "No best index found." << endl;
+        }
     }
+    
     
     p_ind_population->at(best_index).hall_of_fame = true;
     int index_of_hall_fame_number = best_index;
@@ -181,12 +197,22 @@ void empf(vector<individual_element>* p_ind_population,int number_of_objectives 
     
     for (int temp = 0; temp < min_fitness_indexes.size(); temp++) {
         fronts.push_back(min_fitness_indexes.at(temp));
-        p_ind_population->at(min_fitness_indexes.at(temp)).distance_to_hall_of_fame = 0.0;
+        p_ind_population->at(min_fitness_indexes.at(temp)).performance_score = 0.0;
     }
     
     std::sort(fronts.begin(), fronts.end(), [&](const int& a, const int& b) {
-        return p_ind_population->at(a).distance_to_hall_of_fame < p_ind_population->at(b).distance_to_hall_of_fame;
+        return p_ind_population->at(a).performance_score < p_ind_population->at(b).performance_score;
     });
+    
+    
+    if (debugger_flag) {
+        cout<<"This is after sort"<<endl;
+        for (int temp_value : fronts) {
+            cout<<temp_value<<"\t";
+        }
+        cout<<endl;
+    }
+    
     
     //First set everthing to remove.
     int loopcounter = fronts.size()-1;

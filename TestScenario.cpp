@@ -119,7 +119,7 @@ vector<double> limitation_values(int case_number){
             x_value.push_back(temp_y);
             
             while (!check_constrains_vec(x_value,case_number)) {
-                temp_x = fRand(-100000, 100000);
+                temp_x = fRand(-search_area_case_5, search_area_case_5);
                 temp_x = (int)(temp_x * PRECISION)/PRECISION;
                 x_value.at(0) = temp_x;
                 x_value.at(1) = temp_y;

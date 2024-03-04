@@ -228,28 +228,21 @@ void mpf(vector<individual_element>* p_ind_population,int number_of_objectives ,
     // cout<<required_number<<endl;
     //cout<<fronts.at(front_number_to_select).size()+required_number<<endl;
     
-    int temp_required_values = (-work_on_this.at(0).at(1));
+    int number_to_remove = (-work_on_this.at(0).at(1));
     
     //cout<<"This is for the break"<<endl;
     
     
-    vector<double> temp_distance;
-    for (int temp = 0 ; temp < fronts.size(); temp++) {
-        temp_distance.push_back(p_ind_population->at(fronts.at(temp)).distance_to_hall_of_fame);
-    }
+    std::sort(fronts.begin(), fronts.end(), [&](const int& a, const int& b) {
+        return p_ind_population->at(a).distance_to_hall_of_fame < p_ind_population->at(b).distance_to_hall_of_fame;
+    });
     
-    sort(temp_distance.begin(), temp_distance.end(),greater<double>());
     
-    if (temp_distance.at(temp_distance.size()-1)) {
-        temp_distance.pop_back();
-    }
-    
-    for (int individual = 0; individual < temp_required_values; individual++) {
-        for (int i = 0; i < fronts.size(); i++) {
-            if (p_ind_population->at(fronts.at(i)).distance_to_hall_of_fame == temp_distance.at(individual)) {
-                p_ind_population->at(fronts.at(i)).remove_me = true;
-            }
-        }
+    int loopcounter = fronts.size()-1;
+    while (number_to_remove > 0) {
+        p_ind_population->at(fronts.at(loopcounter)).remove_me = true;
+        number_to_remove--;
+        loopcounter--;
     }
     
     select_remove_individuals(p_ind_population, work_on_this.at(0).at(2));
