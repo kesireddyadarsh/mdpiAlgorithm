@@ -9,7 +9,6 @@
 
 
 
-// Function to generate reference points (simplified for 2D case)
 vector<ReferencePoint> generateReferencePoints(int divisions, int objectives) {
     vector<ReferencePoint> referencePoints;
     double step = 1.0 / divisions;
@@ -23,7 +22,6 @@ vector<ReferencePoint> generateReferencePoints(int divisions, int objectives) {
     return referencePoints;
 }
 
-// Function to calculate perpendicular distance (simplified)
 double calculatePerpendicularDistance(const individual_element& individual, const ReferencePoint& rp) {
     
     double distance = 0.0;
@@ -36,7 +34,6 @@ double calculatePerpendicularDistance(const individual_element& individual, cons
     return sqrt(distance);
 }
 
-// Main function to associate individuals with reference points and calculate distances
 void associateAndCalculateDistances(vector<individual_element>* p_ind_population, const vector<ReferencePoint>& referencePoints) {
     
     for (auto& individual : *p_ind_population) {
@@ -51,23 +48,20 @@ void associateAndCalculateDistances(vector<individual_element>* p_ind_population
             }
         }
         
-        // Here, you would store the minDistance and/or the closestReferencePointIndex with the individual
-        // For example:
-        individual.reference_line = closestReferencePointIndex; // Assign reference point index
-        individual.ranking_value = minDistance; // Store distance (or however you wish to use it)
+        
+        individual.reference_line = closestReferencePointIndex; 
+        individual.ranking_value = minDistance;
     }
 }
 
 void markForRemovalUsingNiching(vector<individual_element>* population, vector<int> fronts, int front_number, int num_to_remove) {
     map<int, vector<int>> refPointToIndividualsMap;
 
-    // Step 1: Associate individuals with reference points
     for (int i = 0; i<fronts.size(); i++) {
         int refPointIndex = (*population)[fronts.at(i)].reference_line;
         refPointToIndividualsMap[refPointIndex].push_back(fronts.at(i));
     }
 
-    // Step 2: For each reference point, sort associated individuals by their distance (or other criteria)
     for (auto& [refPointIndex, individuals]: refPointToIndividualsMap) {
         sort(individuals.begin(), individuals.end(), [&](int a, int b) {
             return (*population)[a].ranking_value > (*population)[b].ranking_value;
@@ -80,7 +74,6 @@ void markForRemovalUsingNiching(vector<individual_element>* population, vector<i
 
             for (auto& [refPointIndex, individuals] : refPointToIndividualsMap) {
                 if (!individuals.empty() && removed < num_to_remove) {
-                    // Mark the least preferable individual (farthest from reference point) for removal
                     int individualIndex = individuals.back();
                     (*population)[individualIndex].remove_me = true;
                     individuals.pop_back(); // Remove from this list as it's now marked for removal
@@ -89,7 +82,6 @@ void markForRemovalUsingNiching(vector<individual_element>* population, vector<i
                 }
             }
 
-            // If no individuals were removed in this iteration, break to avoid infinite loop
             if (!removedThisRound) {
                 break;
             }
