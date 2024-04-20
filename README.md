@@ -18,6 +18,12 @@ In this code the following test functions are used. Please refer (paper) for the
 * Zitzler-Deb-Thiele’s N6
 * Osyczka and Kundu
 * Const-Ex
+* VR_UC Test 1
+* VR-UC Test 2
+* MSGA Test 1
+* MHHM1
+* MHHM2
+* Viennet Function
 
 ## Algorithms 
 Please find the code for the following algorithms. In (paper), we do not use Simple EA provided in the code. It was used for testing to test functions, range of search domain, methodologies, and simulation runs. While the Simple EA can utilized a summation of objectives, this approach is not ideal for solving multi-objective optimization problems. The results from the simulation are presented in (paper) Appendix B. 
