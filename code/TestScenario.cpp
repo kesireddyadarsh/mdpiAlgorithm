@@ -333,6 +333,100 @@ vector<double> limitation_values(int case_number){
             break;
         }
             
+        case 17:{
+            temp_x = fRand(0, 1);
+            temp_x = (int)(temp_x * PRECISION)/PRECISION;
+            vector<double> x_value;
+            x_value.push_back(temp_x);
+            while (!check_constrains_vec(x_value, case_number)) {
+                temp_x = fRand(0, 1);
+                temp_x = (int)(temp_x * PRECISION)/PRECISION;
+                x_value.at(0) = temp_x;
+            }
+            return x_value;
+            break;
+        }
+            
+        case 18:{
+            temp_x = fRand(0, 1);
+            temp_x = (int)(temp_x * PRECISION)/PRECISION;
+            temp_y = fRand(0, 1);
+            temp_y = (int)(temp_y * PRECISION)/PRECISION;
+            vector<double> x_value;
+            x_value.push_back(temp_x);
+            x_value.push_back(temp_y);
+            while (!check_constrains_vec(x_value, case_number)) {
+                temp_x = fRand(0, 1);
+                temp_x = (int)(temp_x * PRECISION)/PRECISION;
+                x_value.at(0) = temp_x;
+                temp_y = fRand(0, 1);
+                temp_y = (int)(temp_y * PRECISION)/PRECISION;
+                x_value.at(1) = temp_y;
+            }
+            return x_value;
+            break;
+        }
+            
+        case 19:{
+            temp_x = fRand(-5, 10);
+            temp_x = (int)(temp_x * PRECISION)/PRECISION;
+            temp_y = fRand(-5, 10);
+            temp_y = (int)(temp_y * PRECISION)/PRECISION;
+            vector<double> x_value;
+            x_value.push_back(temp_x);
+            x_value.push_back(temp_y);
+            while (!check_constrains_vec(x_value, case_number)) {
+                temp_x = fRand(-5, 10);
+                temp_x = (int)(temp_x * PRECISION)/PRECISION;
+                x_value.at(0) = temp_x;
+                temp_y = fRand(-5, 10);
+                temp_y = (int)(temp_y * PRECISION)/PRECISION;
+                x_value.at(1) = temp_y;
+            }
+            return x_value;
+            break;
+        }
+            
+        case 20:{
+            temp_x = fRand(-3, 3);
+            temp_x = (int)(temp_x * PRECISION)/PRECISION;
+            temp_y = fRand(-3, 3);
+            temp_y = (int)(temp_y * PRECISION)/PRECISION;
+            vector<double> x_value;
+            x_value.push_back(temp_x);
+            x_value.push_back(temp_y);
+            while (!check_constrains_vec(x_value, case_number)) {
+                temp_x = fRand(-3, 3);
+                temp_x = (int)(temp_x * PRECISION)/PRECISION;
+                x_value.at(0) = temp_x;
+                temp_y = fRand(-3, 3);
+                temp_y = (int)(temp_y * PRECISION)/PRECISION;
+                x_value.at(1) = temp_y;
+            }
+            return x_value;
+            break;
+        }
+            
+        case 21:{
+            temp_x = fRand(-3, 3);
+            temp_x = (int)(temp_x * PRECISION)/PRECISION;
+            temp_y = fRand(-3, 3);
+            temp_y = (int)(temp_y * PRECISION)/PRECISION;
+            vector<double> x_value;
+            x_value.push_back(temp_x);
+            x_value.push_back(temp_y);
+            while (!check_constrains_vec(x_value, case_number)) {
+                temp_x = fRand(-3, 3);
+                temp_x = (int)(temp_x * PRECISION)/PRECISION;
+                x_value.at(0) = temp_x;
+                temp_y = fRand(-3, 3);
+                temp_y = (int)(temp_y * PRECISION)/PRECISION;
+                x_value.at(1) = temp_y;
+            }
+            return x_value;
+            break;
+        }
+            
         default:
             exit(1);
             break;
@@ -615,6 +709,54 @@ bool check_constrains_vec(vector<double> x_value_vec, int case_number){
             break;
         }
         
+        case 17:
+        {
+            if (x_value_vec.at(0) > 1 || x_value_vec.at(0) < 0) {
+                return false;
+            }
+            break;
+        }
+            
+        case 18:
+        {
+            for (int i=0; i < x_value_vec.size(); i++) {
+                if (x_value_vec.at(i) > 1 || x_value_vec.at(i) < 0) {
+                    return false;
+                }
+            }
+            break;
+        }
+            
+        case 19:
+        {
+            for (int i=0; i < x_value_vec.size(); i++) {
+                if (x_value_vec.at(i) > 10 || x_value_vec.at(i) < -5) {
+                    return false;
+                }
+            }
+            break;
+        }
+            
+        case 20:
+        {
+            for (int i = 0 ; i< x_value_vec.size(); i++) {
+                if (x_value_vec.at(i) > 3 || x_value_vec.at(i) < -3) {
+                    return false;
+                }
+            }
+            break;
+        }
+            
+        case 21:
+        {
+            for (int i = 0 ; i< x_value_vec.size(); i++) {
+                if (x_value_vec.at(i) > 3 || x_value_vec.at(i) < -3) {
+                    return false;
+                }
+            }
+            break;
+        }
+            
             
         default:
             break;
@@ -846,7 +988,48 @@ void exe_function(vector<individual_element>* p_ind_population, int individual, 
             double numerator_2 = pow((p_ind_population->at(individual).all_x.at(0) - p_ind_population->at(individual).all_x.at(1) +1), 2);
             p_ind_population->at(individual).fitness_value.push_back((numerator_1/8)+(numerator_2/27)+15);
             p_ind_population->at(individual).fitness_value.push_back((1/(summation_x_y+1))-(1.1*exp(-summation_x_y)));
+            break;
         }
+        
+        /*
+            https://ro.ecu.edu.au/cgi/viewcontent.cgi?referer=&httpsredir=1&article=3021&context=ecuworks
+        */
+            //MHHM1
+         case 17:{
+             p_ind_population->at(individual).fitness_value.push_back(pow(p_ind_population->at(individual).all_x.at(0)-0.8, 2));
+             p_ind_population->at(individual).fitness_value.push_back(pow(p_ind_population->at(individual).all_x.at(0)-0.85, 2));
+             p_ind_population->at(individual).fitness_value.push_back(pow(p_ind_population->at(individual).all_x.at(0)-0.9, 2));
+            break;
+        }
+            //MHHM2
+        case 18:{
+            p_ind_population->at(individual).fitness_value.push_back(pow(p_ind_population->at(individual).all_x.at(0)-0.8, 2) + pow(p_ind_population->at(individual).all_x.at(1)-0.6, 2));
+            p_ind_population->at(individual).fitness_value.push_back(pow(p_ind_population->at(individual).all_x.at(0)-0.85, 2)+ pow(p_ind_population->at(individual).all_x.at(1)-0.7, 2));
+            p_ind_population->at(individual).fitness_value.push_back(pow(p_ind_population->at(individual).all_x.at(0)-0.9, 2) + pow(p_ind_population->at(individual).all_x.at(1)-0.6, 2));
+            break;
+        }
+            //LE1
+        case 19:{
+            p_ind_population->at(individual).fitness_value.push_back( pow(  pow((p_ind_population->at(individual).all_x.at(0)),2) + pow((p_ind_population->at(individual).all_x.at(1)),2) , 0.125) );
+            p_ind_population->at(individual).fitness_value.push_back( pow(  pow((p_ind_population->at(individual).all_x.at(0) - 0.5 ),2) + pow((p_ind_population->at(individual).all_x.at(1) - 0.5 ),2) , 0.125) );
+            break;
+        }
+            //VU1
+        case 20:{
+            double denom = pow(p_ind_population->at(individual).all_x.at(0), 2) + pow(p_ind_population->at(individual).all_x.at(1), 2) + 1;
+            double nume = 1.0;
+            p_ind_population->at(individual).fitness_value.push_back(nume/denom);
+            double second = pow(p_ind_population->at(individual).all_x.at(0), 2) + (3*pow(p_ind_population->at(individual).all_x.at(1), 2)) + 1;
+            p_ind_population->at(individual).fitness_value.push_back(second);
+            break;
+        }
+            //VU2
+        case 21:{
+            p_ind_population->at(individual).fitness_value.push_back( p_ind_population->at(individual).all_x.at(0) + p_ind_population->at(individual).all_x.at(1) + 1);
+            p_ind_population->at(individual).fitness_value.push_back( p_ind_population->at(individual).all_x.at(0) + (2*p_ind_population->at(individual).all_x.at(1)) - 1);
+            break;
+        }
+            
             
     }
 }

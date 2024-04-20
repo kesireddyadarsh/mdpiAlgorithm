@@ -33,12 +33,12 @@ int main(int argc, const char * argv[]) {
     unsigned int seed = time(0) + clock() + getpid();
     srand(seed);
     
-    for (int simulation_run = 0; simulation_run < 31; simulation_run++) {
+    for (int simulation_run = 0; simulation_run < 30; simulation_run++) {
         population pop;
         int number_of_population = 100;
-        int case_number = 14;//This is objective number
+        int case_number = 21;//This is objective number
         int number_of_objectives = 2;
-        int case_to_study = 1;
+        int case_to_study = 4;
         
         for (int generation = 0 ; generation < 1000; generation++) {
             if (generation == 0 ) {
